@@ -44,19 +44,22 @@ let signUp = async (req, res) => {
 
 };
 let signIn = async (req, res) => {
-    const { email, password } = req.body;
-
-    if (!email || !password) {
-        return res.status(400).json({ message: "Email and password are required" });
+    try{
+    const { name, password } = req.body;
+    const existingUsername= await User.findOne({ name });
+    if (!existingUsername) {
+        return res.status(400).json({ message: "Username not found" });
+    }
+    const existingPassword = await User.findOne({ password });
+    if (!existingPassword) {
+        return res.status(400).json({ message: "Incorrect password" });
+    }
+    res.send({ message: "Login successful", user: existingUsername });
+    }
+    catch(err){
+res.send({message:"Internal Server Error",err})
     }
 
-    const user = await User.findOne({ email });
-
-    if (!user || user.password !== password) {
-        return res.status(401).json({ message: "Invalid email or password" });
-    }
-
-    res.status(200).json({ message: "Login successful", user });
 };
 
 export { signUp, signIn };
