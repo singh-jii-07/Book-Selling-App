@@ -1,5 +1,5 @@
 import User from "../modules/User.js";
-
+import jwt from "jsonwebtoken";
 let signUp = async (req, res) => {
     try {
         const { name, email, password, address } = req.body;
@@ -44,22 +44,76 @@ let signUp = async (req, res) => {
 
 };
 let signIn = async (req, res) => {
-    try{
+  try {
     const { name, password } = req.body;
-    const existingUsername= await User.findOne({ name });
-    if (!existingUsername) {
-        return res.status(400).json({ message: "Username not found" });
+
+    if (!name || !password) {
+      return res.status(400).json({ message: "Both name and password are required" });
     }
-    const existingPassword = await User.findOne({ password });
-    if (!existingPassword) {
-        return res.status(400).json({ message: "Incorrect password" });
+
+    const user = await User.findOne({ name });
+
+    if (!user) {
+      return res.status(400).json({ message: "Username not found" });
     }
-    res.send({ message: "Login successful", user: existingUsername });
+
+    if (user.password !== password) {
+      return res.status(400).json({ message: "Incorrect password" });
+    }
+
+ 
+    const payload = {
+      id: user._id,
+      name: user.name,
+      role: user.role
+    };
+
+    const token = jwt.sign(payload, "bookStore123", { expiresIn: "30d" });
+
+    return res.status(200).json({
+      message: "Login successful",
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+      }
+    });
+  } catch (err) {
+    console.error("SignIn Error:", err);
+    res.status(500).json({ message: "Internal Server Error", error: err.message || err });
+  }
+};
+ let authenticate = async (req, res, next) => {
+try{
+const{id}=req.headers;
+const data=await User.findById(id);
+return res.status(200).json({
+    message: "User authenticated successfully",
+    data:data
+})
+}
+catch (err){
+    console.error("Authentication Error:", err);
+    res.status(500).json({ message: "Internal Server Error", error: err.message || err });
+}
+ }
+
+ let update=async(req,res)=>{
+    try{
+const{id}=req.headers;
+const{address}=req.body
+const data=await User.findByIdAndUpdate(id,{$set:{address:address}});
+return res.status(200).json({
+    message: "User updated successfully",
+    data:data
+})
     }
     catch(err){
-res.send({message:"Internal Server Error",err})
+        console.error("Update Error:", err);
+        res.status(500).json({ message: "Internal Server Error", error: err.message || err });
     }
+ }
 
-};
-
-export { signUp, signIn };
+export { signUp, signIn, authenticate,update };
