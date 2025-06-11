@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import { Routes } from './App/Routes/user.js';
 import { bookRoutes } from './App/Routes/Book.js';
+import {favouriteRoutes } from './App/Routes/Favourite.js';
 
 dotenv.config();
 
@@ -14,6 +15,7 @@ app.use(cors());
 // Use separate base paths
 app.use('/website/api/user', Routes);
 app.use('/website/api/book', bookRoutes);
+app.use('/website/api/book', favouriteRoutes);
 
 mongoose.connect(process.env.DBURI)
     .then(() => {
