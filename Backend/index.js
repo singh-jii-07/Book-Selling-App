@@ -6,6 +6,7 @@ import { Routes } from './App/Routes/user.js';
 import { bookRoutes } from './App/Routes/Book.js';
 import {favouriteRoutes } from './App/Routes/Favourite.js';
 import { cartRoutes } from './App/Routes/AddToCart.js';
+import { orderRoutes } from './App/Routes/Order.js';
 
 dotenv.config();
 
@@ -18,6 +19,7 @@ app.use('/website/api/user', Routes);
 app.use('/website/api/book', bookRoutes);
 app.use('/website/api/book', favouriteRoutes);
 app.use('/website/api/book', cartRoutes);
+app.use('/website/api/book', orderRoutes);
 
 mongoose.connect(process.env.DBURI)
     .then(() => {
