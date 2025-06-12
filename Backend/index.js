@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import { Routes } from './App/Routes/user.js';
 import { bookRoutes } from './App/Routes/Book.js';
 import {favouriteRoutes } from './App/Routes/Favourite.js';
+import { cartRoutes } from './App/Routes/AddToCart.js';
 
 dotenv.config();
 
@@ -16,6 +17,7 @@ app.use(cors());
 app.use('/website/api/user', Routes);
 app.use('/website/api/book', bookRoutes);
 app.use('/website/api/book', favouriteRoutes);
+app.use('/website/api/book', cartRoutes);
 
 mongoose.connect(process.env.DBURI)
     .then(() => {
