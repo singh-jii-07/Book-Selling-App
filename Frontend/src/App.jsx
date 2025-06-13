@@ -1,13 +1,17 @@
-
+import Navbar from "./Components/Navbar/Navbar"
+import Home from './Pages/Home'
+import Footer from './Components/Footer/Footer'
 
 function App() {
 
 
   return (
     <>
-      <h1 className="text-red-500 bg-black">
-        hello
-      </h1>
+    <Navbar/>
+   <Home/>
+   <Footer/>
+
+   
     </>
   )
 }
