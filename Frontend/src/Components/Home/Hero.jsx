@@ -18,7 +18,7 @@ const Hero = () => {
 
       <div className="w-full lg:w-1/2 mt-10 lg:mt-0 flex justify-center items-center overflow-hidden">
         <img
-          src="https://imgs.search.brave.com/Nf2b-RQx6ifoEn-JJBvYgkvBZHpFsyR7hfTUWy43WpM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/bW9zLmNtcy5mdXR1/cmVjZG4ubmV0L29m/VlR0cUF2SEs2S1hB/ZWpEWnM2NEYuanBn"
+          src="https://imgs.search.brave.com/xdA0I3p5gtG3MXQO7LFWlvn8Y8lnAFnnBbtygCHwn34/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/cGl4YWJheS5jb20v/cGhvdG8vMjAxNS8w/Ny8yNy8yMC8xNi9i/b29rLTg2MzQxOF82/NDAuanBn"
           alt="Books Illustration"
           className="w-[90%] max-w-md rounded-xl shadow-lg object-cover transition-transform duration-500 hover:scale-105"
         />

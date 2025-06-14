@@ -1,9 +1,10 @@
 import React from 'react'
 
+import BookCardList from '../Components/AllBook/BookCardList'
 const AllBooks = () => {
   return (
     <div>
-      All-books
+      <BookCardList/>
     </div>
   )
 }
