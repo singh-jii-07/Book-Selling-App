@@ -13,7 +13,7 @@ function App() {
   const router = createBrowserRouter([
     
     {
-      path: "/home",
+      path: "/",
       element: (
         <div>
           <Navbar />

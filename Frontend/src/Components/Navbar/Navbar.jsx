@@ -8,7 +8,7 @@ const Navbar = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const links = [
-    { name: 'Home', link: '/home' },
+    { name: 'Home', link: '/' },
     { name: 'About Us', link: '/about' },
     { name: 'All-Books', link: '/all-books' },
     { name: 'Cart', link: '/cart' },
