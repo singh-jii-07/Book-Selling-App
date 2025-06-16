@@ -25,7 +25,7 @@ const Login = () => {
       const res = await axios.post("http://localhost:4020/website/api/user/signIn", formdata);
 
       if (res.status === 200 && res.data) {
-        login(res.data); // Store user in context
+        login(res.data); 
         navigate("/profile");
       }
     } catch (err) {
