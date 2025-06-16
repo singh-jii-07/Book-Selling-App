@@ -1,59 +1,77 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../Components/Context/AuthContext';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useAuth } from "../Components/Context/AuthContext";
 
 const Login = () => {
-  const [formdata, setFormdata] = useState({ email: '', password: '' });
-  const { login } = useAuth();
+  const [formdata, setFormdata] = useState({
+    name: "",
+    password: "",
+  });
+
+  const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { login } = useAuth();
 
-  const handleSubmit = (e) => {
+  const handleChange = (e) => {
+    setFormdata({ ...formdata, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
 
-    // You can replace this with actual validation or context logic
-    if (formdata.email && formdata.password) {
-      login(); // Mark user as logged in
-      navigate('/profile'); // Redirect after login
+    try {
+      const res = await axios.post("http://localhost:4020/website/api/user/signIn", formdata);
+
+      if (res.status === 200 && res.data) {
+        login(res.data); // Store user in context
+        navigate("/profile");
+      }
+    } catch (err) {
+      console.error(err);
+      setError(err.response?.data?.message || "Login failed.");
     }
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow-md rounded">
-      <h2 className="text-2xl font-bold text-center text-indigo-600 mb-6">Login</h2>
-
-      <form onSubmit={handleSubmit} className="p-2">
-        <div className="py-3">
-          <label className="text-black text-[16px] font-medium">Email</label>
+    <div className="flex justify-center items-center h-screen bg-gray-100">
+      <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
+        <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
+        {error && <p className="text-red-500 mb-4 text-sm">{error}</p>}
+        <form onSubmit={handleSubmit}>
           <input
-            type="email"
-            className="border border-gray-400 p-1 w-full"
-            placeholder="Enter your email"
-            name="email"
+            type="text"
+            name="name"
+            placeholder="Name"
+            value={formdata.name}
+            onChange={handleChange}
+            className="border border-gray-300 p-2 mb-4 w-full rounded"
             required
-            value={formdata.email}
-            onChange={(e) => setFormdata({ ...formdata, email: e.target.value })}
           />
-        </div>
-
-        <div className="py-3">
-          <label className="text-black text-[16px] font-medium">Password</label>
           <input
             type="password"
-            className="border border-gray-400 p-1 w-full"
-            placeholder="Enter your password"
             name="password"
-            required
+            placeholder="Password"
             value={formdata.password}
-            onChange={(e) => setFormdata({ ...formdata, password: e.target.value })}
+            onChange={handleChange}
+            className="border border-gray-300 p-2 mb-4 w-full rounded"
+            required
           />
-        </div>
-
-        <div>
-          <button className="bg-indigo-500 text-white font-medium p-2 w-full mt-4">
+          <button
+            type="submit"
+            className="bg-blue-500 hover:bg-blue-600 text-white p-2 w-full rounded"
+          >
             Login
           </button>
-        </div>
-      </form>
+        </form>
+        <p className="mt-4 text-center text-sm">
+          Don’t have an account?{" "}
+          <a href="/signup" className="text-blue-500 hover:underline">
+            Sign Up
+          </a>
+        </p>
+      </div>
     </div>
   );
 };
