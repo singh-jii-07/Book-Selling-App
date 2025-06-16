@@ -29,7 +29,7 @@ const BookDetails = () => {
     <div className="min-h-screen bg-[#1f1f1f] text-white flex justify-center items-center px-6 py-12">
       <div className="max-w-6xl w-full flex flex-col md:flex-row gap-12 bg-[#2a2a2a] rounded-xl shadow-lg p-8">
         
-        {/* Image Section */}
+        
         <div className="md:w-1/2 flex justify-center items-center">
           <img
             src={book?.url || 'https://via.placeholder.com/300x400'}
