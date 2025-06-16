@@ -128,4 +128,27 @@ let getOnlyFour = async (req, res) => {
     });
   }
 };
-export { addBook, UpdateBook, deletBook, getAllBook, getOnlyFour };
+let getBookById = async (req, res) => {
+  try {
+    const bookId = req.params.id;
+    const book = await Book.findById(bookId);
+
+    if (!book) {
+      return res.status(404).json({ message: "Book not found" });
+    }
+
+    return res.json({
+      status: "Success",
+      data: book
+    });
+
+  } catch (error) {
+    console.error("Error fetching book by ID:", error);
+    return res.status(500).json({
+      message: "An error occurred",
+      error: error.message,
+    });
+  }
+};
+
+export { addBook, UpdateBook, deletBook, getAllBook, getOnlyFour,getBookById };

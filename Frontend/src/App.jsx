@@ -8,6 +8,7 @@ import Profile from "./Pages/Profile";
 import AllBooks  from "./Pages/All-books";
 import SignIn from "./Pages/SignIn";
 import SignUp from "./Pages/SignUp";
+import Details from "./Components/details/Details";
 
 function App() {
   const router = createBrowserRouter([
@@ -79,6 +80,16 @@ function App() {
         <div>
           <Navbar />
           <SignUp />
+          <Footer />
+        </div>
+      ),
+    },
+    {
+      path: "/view-details/:id",
+      element: (
+        <div>
+          <Navbar />
+          <Details/>
           <Footer />
         </div>
       ),

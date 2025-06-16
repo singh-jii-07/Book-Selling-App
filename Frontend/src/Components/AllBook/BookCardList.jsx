@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 const BookCardList = () => {
   const [books, setBooks] = useState([]);
@@ -22,13 +23,14 @@ const BookCardList = () => {
   if (loading) return <div className="text-center p-6 text-lg font-medium">Loading books…</div>;
   if (error) return <div className="text-center text-red-500 p-6">{error}</div>;
 
-  return (
-    <div className="px-6 py-10 max-w-7xl mx-auto">
-      <h2 className="text-3xl font-bold text-center mb-8 text-zinc-800">📚 All Books</h2>
-      
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-        {books.map(book => (
-          <div key={book._id} className="bg-white rounded-2xl shadow-lg border hover:shadow-2xl transition p-4">
+ return (
+  <div className="px-6 py-10 max-w-7xl mx-auto">
+    <h2 className="text-3xl font-bold text-center mb-8 text-zinc-800">📚 All Books</h2>
+
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+      {books.map(book => (
+        <Link to={`/view-details/${book._id}`} key={book._id}>
+          <div className="bg-white rounded-2xl shadow-lg border hover:shadow-2xl transition p-4">
             <div className="overflow-hidden border-4 border-indigo-400 rounded-xl">
               <img
                 src={book.url || 'https://imgs.search.brave.com/KNx0ZoMmuEjxh77ewTIY3mKvbCs-SPFRFuclV8-A4WI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5pc3RvY2twaG90/by5jb20vaWQvMTM1/NDQ0MTk5Ni9waG90/by9pbWFnZS1vZi1v/cGVuLWFudGlxdWUt/Ym9vay1vbi13b29k/ZW4tdGFibGUtd2l0/aC1nbGl0dGVyLW92/ZXJsYXkuanBnP3M9/NjEyeDYxMiZ3PTAm/az0yMCZjPWdBXzdS/QjdPbERtRGl3RW1T/emhwckZCRHZvd0sy/aERfLWVqZi1zdGtP/cEE9'}
@@ -43,12 +45,14 @@ const BookCardList = () => {
               </h3>
               <p className="text-sm italic text-gray-500 mt-1">{book.author}</p>
               <p className="text-lg font-bold text-yellow-600 mt-2">₹{book.price}</p>
+           
             </div>
           </div>
-        ))}
-      </div>
+        </Link>
+      ))}
     </div>
-  );
-};
+  </div>
+);
+}
 
 export default BookCardList;

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-
+import { Link } from 'react-router-dom';
 const BooksList = () => {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -30,6 +30,7 @@ const BooksList = () => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
         {books.map((book) => (
+          <Link to={`/view-details/${book._id}`} key={book._id}>
           <div
             key={book._id}
             className="bg-white rounded-2xl shadow-xl border border-zinc-200 hover:shadow-2xl transition duration-300"
@@ -51,9 +52,11 @@ const BooksList = () => {
                 <p className="mt-2 text-lg font-semibold text-yellow-500 drop-shadow">
                   ₹{book.price}
                 </p>
+              
               </div>
             </div>
           </div>
+              </Link>
         ))}
       </div>
     </div>
