@@ -4,14 +4,10 @@ import axios from "axios";
 import { useAuth } from "../Components/Context/AuthContext";
 
 const Login = () => {
-  const [formdata, setFormdata] = useState({
-    name: "",
-    password: "",
-  });
-
+  const { login } = useAuth();
+  const [formdata, setFormdata] = useState({ name: "", password: "" });
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const { login } = useAuth();
 
   const handleChange = (e) => {
     setFormdata({ ...formdata, [e.target.name]: e.target.value });
@@ -20,14 +16,18 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-
     try {
       const res = await axios.post("http://localhost:4020/website/api/user/signIn", formdata);
 
-      if (res.status === 200 && res.data) {
-        login(res.data); 
-        navigate("/profile");
-      }
+      // Store token and user info if needed
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("id", res.data.user.id);
+      localStorage.setItem("role", res.data.user.role);
+
+      // Use AuthContext to set user state
+      login(res.data.user);
+
+      navigate("/profile"); // Redirect after successful login
     } catch (err) {
       console.error(err);
       setError(err.response?.data?.message || "Login failed.");
@@ -46,7 +46,7 @@ const Login = () => {
             placeholder="Name"
             value={formdata.name}
             onChange={handleChange}
-            className="border border-gray-300 p-2 mb-4 w-full rounded"
+            className="border p-2 mb-4 w-full rounded"
             required
           />
           <input
@@ -55,7 +55,7 @@ const Login = () => {
             placeholder="Password"
             value={formdata.password}
             onChange={handleChange}
-            className="border border-gray-300 p-2 mb-4 w-full rounded"
+            className="border p-2 mb-4 w-full rounded"
             required
           />
           <button
