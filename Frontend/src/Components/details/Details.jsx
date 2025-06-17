@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate,Link } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-import { FaHeart } from "react-icons/fa";
-import { FaCartPlus } from "react-icons/fa";
-import { useAuth } from "../Context/AuthContext";
+import { FaHeart, FaCartPlus } from "react-icons/fa";
+import { MdEdit, MdDelete } from "react-icons/md";
 
+import { useAuth } from "../Context/AuthContext";
 
 const BookDetails = () => {
   const { id } = useParams();
@@ -12,7 +12,38 @@ const BookDetails = () => {
   const [book, setBook] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const { isAuthenticated,user } = useAuth();
+  const { isAuthenticated, user } = useAuth();
+
+  const headers = {
+    id: localStorage.getItem("id"),
+    authorization: `Bearer ${localStorage.getItem("token")}`,
+    bookid: id,
+  };
+
+  const HandleFavourite = async () => {
+    try {
+      const res = await axios.put(
+        "http://localhost:4020/website/api/book/addFavourite",
+        {},
+        { headers }
+      );
+      console.log(res.data);
+    } catch (error) {
+      console.error("Failed to add to favourites:", error);
+    }
+  };
+ const HandleCart = async()=>{
+try {
+      const res = await axios.put(
+        "http://localhost:4020/website/api/book/addCart",
+        {},
+        { headers }
+      );
+      console.log(res.data);
+    } catch (error) {
+      console.error("Failed to add to favourites:", error);
+    }
+ }
 
   useEffect(() => {
     axios
@@ -42,24 +73,44 @@ const BookDetails = () => {
             alt={book?.title || "Book Cover"}
             className="w-[300px] h-[400px] object-cover rounded-xl shadow-xl border border-gray-600 transition-transform duration-300 hover:scale-105"
           />
-{isAuthenticated && user?.role === "user" && (
-  <div className="flex gap-4 mt-6">
-    <Link
-      to="/profile"
-      className="bg-red-600 hover:bg-red-700 p-3 rounded-full shadow-md transition"
-    >
-      <FaHeart className="text-white text-xl" />
-    </Link>
-    <Link
-      to="/cart"
-      className="bg-green-600 hover:bg-green-700 p-3 rounded-full shadow-md transition"
-    >
-      <FaCartPlus className="text-white text-xl" />
-    </Link>
-  </div>
-)}
 
+          {isAuthenticated && user?.role === "user" && (
+            <div className="flex gap-4 mt-6">
+              
+              <button
+             
+                onClick={HandleFavourite}
+                className="bg-red-600 hover:bg-red-700 p-3 rounded-full shadow-md transition"
+              >
+                <FaHeart className="text-white text-xl" />
+               </button>
+              
+              <Link
+                to="/cart"
+                onClick={HandleCart}
+                className="bg-green-600 hover:bg-green-700 p-3 rounded-full shadow-md transition"
+              >
+                <FaCartPlus className="text-white text-xl" />
+              </Link>
+            </div>
+          )}
 
+          {isAuthenticated && user?.role === "admin" && (
+            <div className="flex gap-4 mt-6">
+              <Link
+                to={`/edit-book/${id}`}
+                className="bg-yellow-600 hover:bg-yellow-700 p-3 rounded-full shadow-md transition"
+              >
+                <MdEdit className="text-white text-xl" />
+              </Link>
+              <button
+             
+                className="bg-red-600 hover:bg-red-700 p-3 rounded-full shadow-md transition"
+              >
+                <MdDelete className="text-white text-xl" />
+              </button>
+            </div>
+          )}
         </div>
 
         <div className="md:w-1/2 flex flex-col justify-center">
@@ -86,6 +137,7 @@ const BookDetails = () => {
           <h2 className="text-xl font-semibold text-yellow-400 mt-6 text-center md:text-left">
             Price : ₹{book?.price || 0}
           </h2>
+
           <button
             onClick={() => navigate(-1)}
             className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition duration-200 shadow-md hover:shadow-lg mb-6 self-start mt-2"
@@ -111,4 +163,4 @@ const BookDetails = () => {
   );
 };
 
-export default BookDetails; 
+export default BookDetails;

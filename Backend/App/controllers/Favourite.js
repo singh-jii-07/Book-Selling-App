@@ -1,4 +1,5 @@
-import User from "../modules/User.js";  
+import User from "../modules/User.js"; 
+import Book from '../modules/Book.js' 
 let  addFavourite=async(req,res)=>{
     const {bookid,id}=req.headers;
     try {
@@ -37,25 +38,26 @@ let  deletFavourite=async(req,res)=>{
 }
 
 const getFavourite = async (req, res) => {
-    try {
-        const userId = req.headers.id;
+  try {
+    const userId = req.headers.id;
 
-        if (!userId) {
-            return res.status(400).json({ message: "User ID not provided in headers" });
-        }
-
-        const userData = await User.findById(userId)
-          
-
-        if (!userData) {
-            return res.status(404).json({ message: "User not found" });
-        }
-
-        return res.status(200).json({ message: "Success", data: userData.favourites });
-    } catch (err) {
-        console.error("Internal Server Error:", err);
-        res.status(500).json({ message: "Error occurred", error: err.message || err });
+    if (!userId) {
+      return res.status(400).json({ message: "User ID not provided in headers" });
     }
+
+    const userData = await User.findById(userId);
+    if (!userData) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Get full book details
+    const favouriteBooks = await Book.find({ _id: { $in: userData.favourites } });
+
+    return res.status(200).json({ message: "Success", data: favouriteBooks });
+  } catch (err) {
+    console.error("Internal Server Error:", err);
+    res.status(500).json({ message: "Error occurred", error: err.message || err });
+  }
 };
 
 

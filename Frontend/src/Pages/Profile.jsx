@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Sidebar from '../Components/Profile/Sidebar';
-import { Outlet } from 'react-router-dom';
+import Favourites from '../Components/Profile/Favourites'
 
 const Profile = () => {
   const headers = {
@@ -27,7 +27,7 @@ const Profile = () => {
   }, []);
 
   return (
-    <div className='bg-zinc-900 px-3 md:px-12 flex flex-col md:flex-row h-screen py-8 text-white'>
+    <div className='bg-zinc-900 px-3 md:px-12 flex flex-col md:flex-row  py-8 text-white'>
       {!profile && !error && (
         <p className='w-full h-full flex items-center justify-center'>
           Loading...
@@ -44,7 +44,7 @@ const Profile = () => {
             <Sidebar data={profile} />
           </div>
           <div className='w-full md:w-5/6'>
-           <Outlet/>
+           <Favourites/>
           </div>
         </>
       )}
