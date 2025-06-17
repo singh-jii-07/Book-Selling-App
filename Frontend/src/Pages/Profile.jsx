@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Sidebar from '../Components/Profile/Sidebar';
+import { Outlet } from 'react-router-dom';
 
 const Profile = () => {
   const headers = {
@@ -43,7 +44,7 @@ const Profile = () => {
             <Sidebar data={profile} />
           </div>
           <div className='w-full md:w-5/6'>
-           
+           <Outlet/>
           </div>
         </>
       )}

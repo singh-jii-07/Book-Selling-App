@@ -100,6 +100,18 @@ function App() {
       ),
     },
     {
+      path: "/cart",
+      element: (
+       
+          <>
+            <Navbar />
+            <Cart/>
+            <Footer />
+          </>
+       
+      ),
+    },
+    {
       path: "*",
       element: (
         <>
@@ -116,4 +128,4 @@ function App() {
   return <RouterProvider router={router} />;
 }
 
-export default App;
+export default App; 
