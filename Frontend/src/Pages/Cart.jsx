@@ -3,10 +3,10 @@ import axios from "axios";
 import { MdDelete } from "react-icons/md";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
-
+import { useNavigate } from "react-router-dom";
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
-
+  const navigate = useNavigate();
   const baseHeaders = {
     id: localStorage.getItem("id"),
     authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -21,6 +21,7 @@ const Cart = () => {
       setCartItems(res.data.data);
     } catch (err) {
       console.error("Failed to fetch cart items:", err);
+      toast.error("Unable to load your cart. Please try again later.");
     }
   };
 
@@ -35,12 +36,43 @@ const Cart = () => {
       toast.success("Item removed from cart");
     } catch (err) {
       console.error("Failed to remove item:", err);
+      toast.error("Failed to remove item from cart");
     }
   };
 
   const getTotalPrice = () => {
     return cartItems.reduce((acc, book) => acc + book.price, 0);
   };
+
+const placeorder = async () => {
+  const bookIds = cartItems.map(item => item._id).filter(Boolean);
+
+  if (bookIds.length === 0) {
+    toast.error("No valid items to order");
+    return;
+  }
+
+  try {
+    const res = await axios.post(
+      "http://localhost:4020/website/api/book/orderbook",
+      {
+        order: bookIds
+      },
+      { headers: baseHeaders }
+    );
+
+    console.log(res.data);
+    toast.success("Order placed successfully!");
+    navigate('/profile/orders');
+    setCartItems([]);
+  } catch (err) {
+    console.error("Failed to place order:", err);
+    toast.error(err?.response?.data?.message || "Failed to place order");
+  }
+};
+
+
+
 
   useEffect(() => {
     fetchCart();
@@ -100,7 +132,11 @@ const Cart = () => {
             <h2 className="text-xl font-bold text-white">
               Total: <span className="text-yellow-400">₹{getTotalPrice()}</span>
             </h2>
-            <button className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-8 py-3 rounded-full text-lg font-semibold shadow-lg">
+            <button
+              className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-8 py-3 rounded-full text-lg font-semibold shadow-lg disabled:opacity-50"
+              onClick={placeorder}
+              disabled={cartItems.length === 0}
+            >
               Order Now
             </button>
           </div>

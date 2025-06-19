@@ -1,7 +1,12 @@
- import React, { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { toast } from 'react-toastify';
+import { toast } from "react-toastify";
+import { motion } from "framer-motion";
+import "react-toastify/dist/ReactToastify.css";
+
+// Place this in your root component if not already added:
+// toast.configure();
 
 const Signup = () => {
   const [formdata, setFormdata] = useState({
@@ -20,39 +25,46 @@ const Signup = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post("http://localhost:4020/website/api/user/signup", formdata);
+      const res = await axios.post(
+        "http://localhost:4020/website/api/user/signup",
+        formdata
+      );
       if (res.status === 201 || res.status === 200) {
-        console.log(res.data)
-        toast.success("Signup successful!");
+        toast.success("Signup successful! 🎉");
         navigate("/signin");
       }
     } catch (err) {
       console.error(err);
-      alert(err.response?.data?.message || "Signup failed");
+      toast.error(err.response?.data?.message || "Signup failed.");
     }
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-center">Sign Up</h2>
+    <div className="flex justify-center items-center h-screen bg-gradient-to-br from-blue-100 via-white to-pink-100">
+      <motion.div
+        initial={{ opacity: 0, y: -40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6 }}
+        className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md border border-gray-200"
+      >
+        <h2 className="text-3xl font-bold mb-6 text-center text-blue-600">Create Account</h2>
         <form onSubmit={handleSubmit}>
           <input
             type="text"
             name="name"
-            placeholder="Name"
+            placeholder="Full Name"
             value={formdata.name}
             onChange={handleChange}
-            className="border border-gray-300 p-2 mb-4 w-full rounded"
+            className="border border-gray-300 p-3 mb-4 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
             required
           />
           <input
             type="email"
             name="email"
-            placeholder="Email"
+            placeholder="Email Address"
             value={formdata.email}
             onChange={handleChange}
-            className="border border-gray-300 p-2 mb-4 w-full rounded"
+            className="border border-gray-300 p-3 mb-4 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
             required
           />
           <input
@@ -61,7 +73,7 @@ const Signup = () => {
             placeholder="Password"
             value={formdata.password}
             onChange={handleChange}
-            className="border border-gray-300 p-2 mb-4 w-full rounded"
+            className="border border-gray-300 p-3 mb-4 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
             required
           />
           <input
@@ -70,23 +82,26 @@ const Signup = () => {
             placeholder="Address"
             value={formdata.address}
             onChange={handleChange}
-            className="border border-gray-300 p-2 mb-4 w-full rounded"
+            className="border border-gray-300 p-3 mb-6 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
             required
           />
-          <button
+
+          <motion.button
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
             type="submit"
-            className="bg-blue-500 hover:bg-blue-600 text-white p-2 w-full rounded"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold p-3 w-full rounded-lg transition-all duration-200"
           >
             Sign Up
-          </button>
+          </motion.button>
         </form>
-        <p className="mt-4 text-center text-sm">
+        <p className="mt-6 text-center text-sm text-gray-600">
           Already have an account?{" "}
-          <a href="/login" className="text-blue-500 hover:underline">
+          <a href="/signin" className="text-blue-500 font-medium hover:underline">
             Login
           </a>
         </p>
-      </div>
+      </motion.div>
     </div>
   );
 };

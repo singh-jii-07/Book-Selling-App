@@ -4,13 +4,21 @@ import { useAuth } from "../Context/AuthContext";
 
 const Sidebar = ({ data }) => {
   const navigate = useNavigate();
-  const { logout } = useAuth(); // corrected
+  const { logout } = useAuth();
 
   const handleLogout = () => {
     localStorage.clear();
     logout();
     navigate("/signin");
   };
+
+  if (!data) {
+    return (
+      <div className="bg-zinc-900 text-white p-6 rounded-xl w-full h-full shadow-lg flex justify-center items-center">
+        <p className="text-zinc-400">Loading profile...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-zinc-900 text-white p-6 rounded-xl w-full h-full shadow-lg flex flex-col justify-between items-center">
@@ -37,11 +45,7 @@ const Sidebar = ({ data }) => {
               Order History
             </Link>
           </li>
-          <li>
-            <Link to="/profile/settings" className="hover:text-yellow-400 block">
-              Settings
-            </Link>
-          </li>
+          
         </ul>
       </div>
 

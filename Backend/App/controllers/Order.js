@@ -1,26 +1,38 @@
 import Order from "../modules/order.js";
 
-let orderBook= async(req,res)=>{
-     try {
-    const { user, book, status } = req.body;
+const orderBook = async (req, res) => {
+  try {
+    const { order } = req.body;
 
-    const newOrder = new Order({ user, book, status });
+    if (!order || order.length === 0) {
+      return res.status(400).json({ message: "Order is empty" });
+    }
+
+    const newOrder = new Order({
+      user: req.user.id, 
+      book: order,       
+      status: "pending"
+    });
+
     await newOrder.save();
-
     res.status(201).json({ message: "Order created", data: newOrder });
   } catch (err) {
     res.status(500).json({ message: "Error creating order", error: err.message });
   }
-}
+};
+
 // ?all order
-let getorder=async(req,res)=>{
- try {
-    const orders = await Order.find().populate("user").populate("book");
+const getorder = async (req, res) => {
+  try {
+    const orders = await Order.find()
+      .populate("user")
+      .populate("book");
+
     res.status(200).json({ message: "All orders", data: orders });
   } catch (err) {
     res.status(500).json({ message: "Error fetching orders", error: err.message });
   }
-}
+};
 // ?get one user?
 let userorder=async(req,res)=>{
  try {

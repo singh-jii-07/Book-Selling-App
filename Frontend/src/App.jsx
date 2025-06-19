@@ -9,7 +9,7 @@ import AllBooks from "./Pages/All-books";
 import SignIn from "./Pages/SignIn";
 import SignUp from "./Pages/SignUp";
 import Details from "./Components/details/Details";
-
+import Order from "./Components/Profile/Order";
 
 function App() {
   const router = createBrowserRouter([
@@ -106,6 +106,18 @@ function App() {
           <>
             <Navbar />
             <Cart/>
+            <Footer />
+          </>
+       
+      ),
+    },
+    {
+      path: "/profile/orders",
+      element: (
+       
+          <>
+            <Navbar />
+            <Order/>
             <Footer />
           </>
        

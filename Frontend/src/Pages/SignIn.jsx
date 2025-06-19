@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../Components/Context/AuthContext";
+import { motion } from "framer-motion";
 
 const Login = () => {
   const { login } = useAuth();
@@ -19,15 +20,12 @@ const Login = () => {
     try {
       const res = await axios.post("http://localhost:4020/website/api/user/signIn", formdata);
 
-      // Store token and user info if needed
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("id", res.data.user.id);
       localStorage.setItem("role", res.data.user.role);
 
-      // Use AuthContext to set user state
       login(res.data.user);
-
-      navigate("/profile"); // Redirect after successful login
+      navigate("/profile");
     } catch (err) {
       console.error(err);
       setError(err.response?.data?.message || "Login failed.");
@@ -35,18 +33,23 @@ const Login = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
-        {error && <p className="text-red-500 mb-4 text-sm">{error}</p>}
+    <div className="flex justify-center items-center h-screen bg-gradient-to-r from-blue-100 via-white to-pink-100">
+      <motion.div
+        initial={{ opacity: 0, y: -30 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md border border-gray-200"
+      >
+        <h2 className="text-3xl font-bold mb-6 text-center text-blue-600">Welcome Back 👋</h2>
+        {error && <p className="text-red-500 mb-4 text-sm text-center">{error}</p>}
         <form onSubmit={handleSubmit}>
           <input
             type="text"
             name="name"
-            placeholder="Name"
+            placeholder="Username"
             value={formdata.name}
             onChange={handleChange}
-            className="border p-2 mb-4 w-full rounded"
+            className="border border-gray-300 p-3 mb-4 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
             required
           />
           <input
@@ -55,23 +58,28 @@ const Login = () => {
             placeholder="Password"
             value={formdata.password}
             onChange={handleChange}
-            className="border p-2 mb-4 w-full rounded"
+            className="border border-gray-300 p-3 mb-6 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
             required
           />
-          <button
+          <motion.button
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
             type="submit"
-            className="bg-blue-500 hover:bg-blue-600 text-white p-2 w-full rounded"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold p-3 w-full rounded-lg transition-all duration-200"
           >
             Login
-          </button>
+          </motion.button>
         </form>
-        <p className="mt-4 text-center text-sm">
+        <p className="mt-6 text-center text-sm text-gray-600">
           Don’t have an account?{" "}
-          <a href="/signup" className="text-blue-500 hover:underline">
+          <a
+            href="/signup"
+            className="text-blue-500 font-medium hover:underline transition-all"
+          >
             Sign Up
           </a>
         </p>
-      </div>
+      </motion.div>
     </div>
   );
 };
