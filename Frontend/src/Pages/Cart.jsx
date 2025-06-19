@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
 import { MdDelete } from "react-icons/md";
+import { Link } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const Cart = () => {
   const [cartItems, setCartItems] = useState([]);
@@ -11,23 +12,19 @@ const Cart = () => {
     authorization: `Bearer ${localStorage.getItem("token")}`,
   };
 
-  // Fetch cart items when component mounts
-useEffect(() => {
   const fetchCart = async () => {
     try {
-      const res = await axios.get("http://localhost:4020/website/api/book/getCart", {
-        headers: baseHeaders,
-      });
+      const res = await axios.get(
+        "http://localhost:4020/website/api/book/getCart",
+        { headers: baseHeaders }
+      );
       setCartItems(res.data.data);
     } catch (err) {
-      console.error("Failed to fetch cart:", err);
+      console.error("Failed to fetch cart items:", err);
     }
   };
 
-  fetchCart();
-}, []);
-
-  const handleRemoveFromCart = async (bookId) => {
+  const handleRemove = async (bookId) => {
     try {
       await axios.put(
         `http://localhost:4020/website/api/book/deleteCart/${bookId}`,
@@ -35,41 +32,80 @@ useEffect(() => {
         { headers: baseHeaders }
       );
       setCartItems((prev) => prev.filter((book) => book._id !== bookId));
+      toast.success("Item removed from cart");
     } catch (err) {
-      console.error("Failed to remove from cart:", err.response?.data || err);
+      console.error("Failed to remove item:", err);
     }
   };
 
-  if (!cartItems || cartItems.length === 0) {
-    return <div className="p-4 text-white">Your cart is empty.</div>;
-  }
+  const getTotalPrice = () => {
+    return cartItems.reduce((acc, book) => acc + book.price, 0);
+  };
+
+  useEffect(() => {
+    fetchCart();
+  }, []);
 
   return (
-    <div className="p-4 text-white bg-zinc-900 ">
-      <h1 className="text-2xl font-bold mb-4">Your Cart</h1>
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {cartItems.map((book) => (
-          <div key={book._id} className="bg-[#2a2a2a] p-4 rounded-lg shadow-md relative">
-            <Link to={`/view-details/${book._id}`}>
-              <img
-                src={book.url}
-                alt={book.title}
-                className="w-full h-64 object-cover rounded"
-              />
-              <h2 className="text-xl mt-2">{book.title}</h2>
-              <p className="text-gray-400">{book.author}</p>
-              <p className="text-yellow-400 mt-2">₹{book.price}</p>
-            </Link>
-            <button
-              onClick={() => handleRemoveFromCart(book._id)}
-              className="absolute top-2 right-2 bg-red-600 hover:bg-red-700 p-2 rounded-full"
-              title="Remove from Cart"
+    <div className="min-h-screen bg-[#121212] text-white flex flex-col px-4">
+      <h1 className="text-3xl font-extrabold py-6 border-b border-gray-700">🛒 Your Cart</h1>
+
+      {cartItems.length === 0 ? (
+        <div className="text-center mt-16">
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/4072/4072212.png"
+            alt="Empty Cart"
+            className="mx-auto w-44 h-44 mb-6 opacity-80"
+          />
+          <h2 className="text-2xl font-bold text-gray-300 mb-2">Your Cart is Empty!</h2>
+          <p className="text-gray-500 mb-6">Looks like you haven’t added anything yet.</p>
+          <Link
+            to="/all-books"
+            className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white px-6 py-3 rounded-full text-lg font-medium shadow-lg"
+          >
+            Browse Books
+          </Link>
+        </div>
+      ) : (
+        <div className="mt-6 space-y-6">
+          {cartItems.map((book) => (
+            <div
+              key={book._id}
+              className="flex flex-col md:flex-row justify-between items-center bg-[#1e1e1e] rounded-xl shadow-lg p-4"
             >
-              <MdDelete className="text-white text-lg" />
+              <div className="flex items-center gap-6">
+                <img
+                  src={book.url}
+                  alt={book.title}
+                  className="w-24 h-32 object-cover rounded-lg"
+                />
+                <div>
+                  <h2 className="text-lg font-bold text-white">{book.title}</h2>
+                  <p className="text-gray-400">{book.author}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-8 mt-4 md:mt-0">
+                <span className="text-xl font-semibold text-yellow-400">₹{book.price}</span>
+                <button
+                  onClick={() => handleRemove(book._id)}
+                  className="bg-red-600 hover:bg-red-700 p-2 rounded-full shadow-md"
+                >
+                  <MdDelete className="text-white text-xl" />
+                </button>
+              </div>
+            </div>
+          ))}
+
+          <div className="flex justify-between items-center bg-[#222] px-6 py-4 rounded-lg mt-6 border-t border-gray-700 shadow-inner">
+            <h2 className="text-xl font-bold text-white">
+              Total: <span className="text-yellow-400">₹{getTotalPrice()}</span>
+            </h2>
+            <button className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-8 py-3 rounded-full text-lg font-semibold shadow-lg">
+              Order Now
             </button>
           </div>
-        ))}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

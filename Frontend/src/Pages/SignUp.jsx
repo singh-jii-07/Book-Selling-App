@@ -1,6 +1,7 @@
  import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { toast } from 'react-toastify';
 
 const Signup = () => {
   const [formdata, setFormdata] = useState({
@@ -22,7 +23,7 @@ const Signup = () => {
       const res = await axios.post("http://localhost:4020/website/api/user/signup", formdata);
       if (res.status === 201 || res.status === 200) {
         console.log(res.data)
-        alert("Signup successful!");
+        toast.success("Signup successful!");
         navigate("/signin");
       }
     } catch (err) {

@@ -4,6 +4,9 @@ import axios from "axios";
 import { FaHeart, FaCartPlus } from "react-icons/fa";
 import { MdEdit, MdDelete } from "react-icons/md";
 
+
+import { toast } from 'react-toastify';
+
 import { useAuth } from "../Context/AuthContext";
 
 const BookDetails = () => {
@@ -27,6 +30,7 @@ const BookDetails = () => {
         {},
         { headers }
       );
+      toast.success("Book added to favourites!");
       console.log(res.data);
     } catch (error) {
       console.error("Failed to add to favourites:", error);
@@ -39,6 +43,7 @@ try {
         {},
         { headers }
       );
+      toast.success("Book added to cart!");
       console.log(res.data);
     } catch (error) {
       console.error("Failed to add to favourites:", error);
@@ -84,14 +89,16 @@ try {
               >
                 <FaHeart className="text-white text-xl" />
                </button>
-              
-              <Link
+              <button
+                
                 to="/cart"
                 onClick={HandleCart}
                 className="bg-green-600 hover:bg-green-700 p-3 rounded-full shadow-md transition"
               >
                 <FaCartPlus className="text-white text-xl" />
-              </Link>
+              
+              </button>
+              
             </div>
           )}
 

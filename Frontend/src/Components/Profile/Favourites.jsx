@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { MdDelete } from "react-icons/md";
+import { toast } from 'react-toastify';
 
 const Favourites = () => {
   const [favourites, setFavourites] = useState([]);
@@ -37,18 +38,38 @@ const handleRemoveFavourite = async (bookId) => {
           bookid: bookId,
         },
       }
+      
     );
 
     // Update local state to remove deleted favourite
     setFavourites((prev) => prev.filter((book) => book._id !== bookId));
+        toast.success("Removed from favourites!");
+
   } catch (err) {
     console.error("Failed to remove favourite:", err.response?.data || err);
   }
 };
 
   if (!favourites || favourites.length === 0) {
-    return <div className="p-4 text-white">No favourites found.</div>;
-  }
+  return (
+    <div className="text-center mt-16 text-white">
+      <img
+        src="https://cdn-icons-png.flaticon.com/512/4072/4072224.png"
+        alt="No Favourites"
+        className="mx-auto w-40 h-40 mb-6 opacity-80"
+      />
+      <h2 className="text-2xl font-semibold text-gray-300 mb-2">No Favourites Yet!</h2>
+      <p className="text-gray-400 mb-6">Save books you love and find them here later.</p>
+      <Link
+        to="/all-books"
+        className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2 rounded-full text-lg font-medium"
+      >
+        Browse Books
+      </Link>
+    </div>
+  );
+}
+
 
   return (
     <div className="p-4 text-white">
