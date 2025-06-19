@@ -73,7 +73,7 @@ function App() {
         <>
           <Navbar />
           <SignIn />
-          <Footer />
+          
         </>
       ),
     },
@@ -83,7 +83,7 @@ function App() {
         <>
           <Navbar />
           <SignUp />
-          <Footer />
+          
         </>
       ),
     },
