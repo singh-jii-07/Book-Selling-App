@@ -19,23 +19,33 @@ let  addFavourite=async(req,res)=>{
         res.status(500).json({ message: "Error occurred", error: err.message || err });
     }
 }
-let  deletFavourite=async(req,res)=>{
-    const {bookid,id}=req.headers;
-    try {
-        const userData = await User.findById(id);
+const deleteFavourite = async (req, res) => {
+  const { bookid, id } = req.headers;
 
-        const isBookFavourite = userData.favourites.includes(bookid);
+  if (!bookid || !id) {
+    return res.status(400).json({ message: "User ID or Book ID missing" });
+  }
 
-       
-
-        await User.findByIdAndUpdate(id, { $pull: { favourites: bookid } });
-
-        return res.status(200).json({ message: "Book remove to favourites" });
-    } catch (err) {
-        console.error("Internal Server Error:", err);
-        res.status(500).json({ message: "Error occurred", error: err.message || err });
+  try {
+    const userData = await User.findById(id);
+    if (!userData) {
+      return res.status(404).json({ message: "User not found" });
     }
-}
+
+    const isBookFavourite = userData.favourites.includes(bookid);
+    if (!isBookFavourite) {
+      return res.status(404).json({ message: "Book not found in favourites" });
+    }
+
+    await User.findByIdAndUpdate(id, { $pull: { favourites: bookid } });
+
+    return res.status(200).json({ message: "Book removed from favourites" });
+  } catch (err) {
+    console.error("Internal Server Error:", err);
+    res.status(500).json({ message: "Error occurred", error: err.message || err });
+  }
+};
+
 
 const getFavourite = async (req, res) => {
   try {
@@ -63,4 +73,4 @@ const getFavourite = async (req, res) => {
 
 
 
-export{addFavourite,deletFavourite,getFavourite}
+export{addFavourite,deleteFavourite,getFavourite}
