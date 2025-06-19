@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+
 const BooksList = () => {
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -23,40 +24,39 @@ const BooksList = () => {
   if (error) return <p className="p-4 text-red-500 text-center text-lg">{error}</p>;
 
   return (
-    <div className="px-4 py-8 max-w-7xl mx-auto">
-      <h2 className="text-3xl font-extrabold text-center text-zinc-800 mb-8">
+    <div className="px-4 py-12 max-w-7xl mx-auto">
+      <h2 className="text-4xl font-extrabold text-center bg-gradient-to-r from-yellow-400 via-pink-500 to-purple-500 bg-clip-text text-transparent mb-10 animate-fadeDown">
         📚 Recently Added Books
       </h2>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-        {books.map((book) => (
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
+        {books.map((book, index) => (
           <Link to={`/view-details/${book._id}`} key={book._id}>
-          <div
-            key={book._id}
-            className="bg-white rounded-2xl shadow-xl border border-zinc-200 hover:shadow-2xl transition duration-300"
-          >
-            <div className="p-4 flex flex-col items-center">
-              <div className="border-4 border-yellow-300 rounded-xl overflow-hidden w-full">
-                <img
-                  src={book.url || 'https://imgs.search.brave.com/KNx0ZoMmuEjxh77ewTIY3mKvbCs-SPFRFuclV8-A4WI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5pc3RvY2twaG90/by5jb20vaWQvMTM1/NDQ0MTk5Ni9waG90/by9pbWFnZS1vZi1v/cGVuLWFudGlxdWUt/Ym9vay1vbi13b29k/ZW4tdGFibGUtd2l0/aC1nbGl0dGVyLW92/ZXJsYXkuanBnP3M9/NjEyeDYxMiZ3PTAm/az0yMCZjPWdBXzdS/QjdPbERtRGl3RW1T/emhwckZCRHZvd0sy/aERfLWVqZi1zdGtP/cEE9'}
-                  alt={book.title}
-                  className="w-full h-52 object-cover hover:scale-105 transition-transform duration-300"
-                />
-              </div>
+            <div
+              className="bg-white rounded-2xl shadow-lg border border-zinc-200 hover:shadow-2xl transform hover:-translate-y-1 transition duration-300 ease-in-out animate-fadeUp"
+              style={{ animationDelay: `${index * 0.1}s`, animationFillMode: "both" }}
+            >
+              <div className="p-4 flex flex-col items-center">
+                <div className="border-4 border-yellow-300 rounded-xl overflow-hidden w-full">
+                  <img
+                    src={book.url || 'https://imgs.search.brave.com/KNx0ZoMmuEjxh77ewTIY3mKvbCs-SPFRFuclV8-A4WI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5pc3RvY2twaG90/by5jb20vaWQvMTM1/NDQ0MTk5Ni9waG90/by9pbWFnZS1vZi1v/cGVuLWFudGlxdWUt/Ym9vay1vbi13b29k/ZW4tdGFibGUtd2l0/aC1nbGl0dGVyLW92/ZXJsYXkuanBnP3M9/NjEyeDYxMiZ3PTAm/az0yMCZjPWdBXzdS/QjdPbERtRGl3RW1T/emhwckZCRHZvd0sy/aERfLWVqZi1zdGtP/cEE9'}
+                    alt={book.title}
+                    className="w-full h-52 object-cover hover:scale-105 transition-transform duration-300"
+                  />
+                </div>
 
-              <div className="mt-4 text-center w-full">
-                <h3 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-indigo-600 via-purple-500 to-pink-500 bg-clip-text text-transparent hover:underline transition duration-200">
-                  {book.title}
-                </h3>
-                <p className="text-sm italic text-zinc-500 mt-1">{book.author}</p>
-                <p className="mt-2 text-lg font-semibold text-yellow-500 drop-shadow">
-                  ₹{book.price}
-                </p>
-              
+                <div className="mt-4 text-center w-full">
+                  <h3 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-indigo-600 via-purple-500 to-pink-500 bg-clip-text text-transparent hover:underline transition duration-200">
+                    {book.title}
+                  </h3>
+                  <p className="text-sm italic text-zinc-500 mt-1">{book.author}</p>
+                  <p className="mt-2 text-lg font-semibold text-yellow-500 drop-shadow">
+                    ₹{book.price}
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
-              </Link>
+          </Link>
         ))}
       </div>
     </div>
