@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 const BooksList = () => {
   const [books, setBooks] = useState([]);
@@ -8,6 +10,8 @@ const BooksList = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
+    AOS.init({ duration: 1000, once: true });
+
     axios.get('http://localhost:4020/website/api/book/getFour')
       .then(response => {
         setBooks(response.data.data);
@@ -25,7 +29,10 @@ const BooksList = () => {
 
   return (
     <div className="px-4 py-12 max-w-7xl mx-auto">
-      <h2 className="text-4xl font-extrabold text-center bg-gradient-to-r from-yellow-400 via-pink-500 to-purple-500 bg-clip-text text-transparent mb-10 animate-fadeDown">
+      <h2
+        className="text-4xl font-extrabold text-center bg-gradient-to-r from-yellow-400 via-pink-500 to-purple-500 bg-clip-text text-transparent mb-10"
+        data-aos="fade-down"
+      >
         📚 Recently Added Books
       </h2>
 
@@ -33,8 +40,9 @@ const BooksList = () => {
         {books.map((book, index) => (
           <Link to={`/view-details/${book._id}`} key={book._id}>
             <div
-              className="bg-white rounded-2xl shadow-lg border border-zinc-200 hover:shadow-2xl transform hover:-translate-y-1 transition duration-300 ease-in-out animate-fadeUp"
-              style={{ animationDelay: `${index * 0.1}s`, animationFillMode: "both" }}
+              className="bg-white rounded-2xl shadow-lg border border-zinc-200 hover:shadow-2xl transform hover:-translate-y-1 transition duration-300 ease-in-out"
+              data-aos="zoom-in"
+              data-aos-delay={index * 100}
             >
               <div className="p-4 flex flex-col items-center">
                 <div className="border-4 border-yellow-300 rounded-xl overflow-hidden w-full">

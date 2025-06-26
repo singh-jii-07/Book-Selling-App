@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   FaBook,
   FaRocket,
@@ -7,10 +7,16 @@ import {
   FaLock,
   FaSearch,
 } from 'react-icons/fa';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 const About = () => {
+  useEffect(() => {
+    AOS.init({ duration: 1000, once: true });
+  }, []);
+
   return (
-    <div className="bg-black text-white min-h-screen animate-fadeIn">
+    <div className="bg-black text-white min-h-screen">
       
       <div className="relative">
         <img
@@ -19,16 +25,15 @@ const About = () => {
           className="w-full h-80 object-cover opacity-80"
         />
         <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40">
-          <h1 className="text-4xl md:text-5xl font-bold text-yellow-100 drop-shadow-lg">
+          <h1 className="text-4xl md:text-5xl font-bold text-yellow-100 drop-shadow-lg" data-aos="zoom-in">
             About Book Bazaar
           </h1>
         </div>
       </div>
 
-      
       <div className="max-w-6xl mx-auto px-6 py-14 md:px-20 space-y-12">
-       
-        <div className="text-center animate-fadeUp">
+        
+        <div className="text-center" data-aos="fade-up">
           <p className="text-lg mb-4">
             <strong className="text-yellow-100">Welcome to Book Bazaar – Your One-Stop Destination for Books!</strong>
           </p>
@@ -39,11 +44,12 @@ const About = () => {
           </p>
         </div>
 
-       
-        <div className="h-1 w-32 mx-auto bg-gradient-to-r from-yellow-400 via-pink-500 to-purple-600 rounded-full animate-pulse"></div>
+        <div
+          className="h-1 w-32 mx-auto bg-gradient-to-r from-yellow-400 via-pink-500 to-purple-600 rounded-full"
+          data-aos="zoom-in"
+        ></div>
 
-       
-        <div className="animate-fadeUp">
+        <div data-aos="fade-right">
           <h2 className="text-2xl font-semibold mb-3 text-yellow-100 flex items-center gap-2">
             <FaRocket /> Our Mission
           </h2>
@@ -53,8 +59,7 @@ const About = () => {
           </p>
         </div>
 
-       
-        <div className="animate-fadeUp">
+        <div data-aos="fade-left">
           <h2 className="text-2xl font-semibold mb-4 text-yellow-100 flex items-center gap-2">
             <FaBook /> What We Offer
           </h2>
@@ -69,6 +74,8 @@ const About = () => {
               <li
                 key={idx}
                 className="bg-zinc-900 p-4 rounded-lg flex items-center gap-3 hover:border-yellow-300 hover:shadow-yellow-400/30 border border-transparent transition-all duration-300"
+                data-aos="fade-up"
+                data-aos-delay={idx * 100}
               >
                 <span className="text-yellow-300 text-xl">{item.icon}</span>
                 <span className="text-zinc-200">{item.text}</span>
@@ -77,9 +84,9 @@ const About = () => {
           </ul>
         </div>
 
-        <div className="text-center space-y-4 animate-fadeUp">
+        <div className="text-center space-y-4" data-aos="fade-up">
           <p className="text-lg font-medium">
-            Whether you're here to buy your next favorite novel or explore exciting new titles –
+            Whether you're here to buy your next favorite novel or explore exciting new titles – 
             <strong className="text-yellow-100"> Book Bazaar is your go-to place for book discovery.</strong>
           </p>
           <p className="text-yellow-100 italic">
