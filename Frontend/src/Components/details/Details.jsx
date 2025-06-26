@@ -3,11 +3,10 @@ import { useParams, useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { FaHeart, FaCartPlus } from "react-icons/fa";
 import { MdEdit, MdDelete } from "react-icons/md";
-
-
-import { toast } from 'react-toastify';
-
+import { toast } from "react-toastify";
 import { useAuth } from "../Context/AuthContext";
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 const BookDetails = () => {
   const { id } = useParams();
@@ -36,8 +35,9 @@ const BookDetails = () => {
       console.error("Failed to add to favourites:", error);
     }
   };
- const HandleCart = async()=>{
-try {
+
+  const HandleCart = async () => {
+    try {
       const res = await axios.put(
         "http://localhost:4020/website/api/book/addCart",
         {},
@@ -46,11 +46,13 @@ try {
       toast.success("Book added to cart!");
       console.log(res.data);
     } catch (error) {
-      console.error("Failed to add to favourites:", error);
+      console.error("Failed to add to cart:", error);
     }
- }
+  };
 
   useEffect(() => {
+    AOS.init({ duration: 800, once: true });
+
     axios
       .get(`http://localhost:4020/website/api/book/bookbyId/${id}`)
       .then((res) => {
@@ -70,35 +72,36 @@ try {
     return <div className="text-center text-red-500 mt-10">{error}</div>;
 
   return (
-    <div className="min-h-screen bg-[#1f1f1f] text-white flex justify-center items-center px-6 py-12">
-      <div className="max-w-6xl w-full flex flex-col md:flex-row gap-12 bg-[#2a2a2a] rounded-xl shadow-lg p-8">
-        <div className="md:w-1/2 flex justify-center items-center flex-col ">
+    <div className="min-h-screen bg-gradient-to-br from-[#1f1f1f] via-[#2a2a2a] to-[#1f1f1f] text-white flex justify-center items-center px-6 py-12">
+      <div
+        className="max-w-6xl w-full flex flex-col md:flex-row gap-12 bg-[#2a2a2a] rounded-xl shadow-2xl p-8 border border-zinc-700"
+        data-aos="zoom-in"
+      >
+        <div className="md:w-1/2 flex justify-center items-center flex-col" data-aos="fade-right">
           <img
             src={book?.url || "https://via.placeholder.com/300x400"}
             alt={book?.title || "Book Cover"}
-            className="w-[300px] h-[400px] object-cover rounded-xl shadow-xl border border-gray-600 transition-transform duration-300 hover:scale-105"
+            className="w-[300px] h-[400px] object-cover rounded-xl shadow-xl border-2 border-indigo-500 transition-transform duration-300 hover:scale-105"
           />
 
           {isAuthenticated && user?.role === "user" && (
             <div className="flex gap-4 mt-6">
-              
               <button
-             
                 onClick={HandleFavourite}
                 className="bg-red-600 hover:bg-red-700 p-3 rounded-full shadow-md transition"
+                data-aos="fade-up"
+                data-aos-delay="100"
               >
                 <FaHeart className="text-white text-xl" />
-               </button>
+              </button>
               <button
-                
-                to="/cart"
                 onClick={HandleCart}
                 className="bg-green-600 hover:bg-green-700 p-3 rounded-full shadow-md transition"
+                data-aos="fade-up"
+                data-aos-delay="150"
               >
                 <FaCartPlus className="text-white text-xl" />
-              
               </button>
-              
             </div>
           )}
 
@@ -107,12 +110,15 @@ try {
               <Link
                 to={`/edit-book/${id}`}
                 className="bg-yellow-600 hover:bg-yellow-700 p-3 rounded-full shadow-md transition"
+                data-aos="fade-up"
+                data-aos-delay="100"
               >
                 <MdEdit className="text-white text-xl" />
               </Link>
               <button
-             
                 className="bg-red-600 hover:bg-red-700 p-3 rounded-full shadow-md transition"
+                data-aos="fade-up"
+                data-aos-delay="150"
               >
                 <MdDelete className="text-white text-xl" />
               </button>
@@ -120,19 +126,19 @@ try {
           )}
         </div>
 
-        <div className="md:w-1/2 flex flex-col justify-center">
-          <h1 className="text-3xl font-bold mb-2 text-center md:text-left">
+        <div className="md:w-1/2 flex flex-col justify-center" data-aos="fade-left">
+          <h1 className="text-4xl font-extrabold mb-3 text-center md:text-left text-indigo-300 drop-shadow">
             {book?.title || "Title not available"}
           </h1>
 
           <p className="text-gray-300 mb-4 text-center md:text-left">
             by{" "}
-            <span className="text-indigo-400">
+            <span className="text-pink-400 font-medium">
               {book?.author || "Unknown Author"}
             </span>
           </p>
 
-          <p className="text-gray-400 mb-4 text-center md:text-left">
+          <p className="text-gray-400 mb-4 text-center md:text-left leading-relaxed">
             {book?.description || "No description provided."}
           </p>
 
@@ -141,13 +147,13 @@ try {
             <span className="text-sm text-gray-200">English</span>
           </div>
 
-          <h2 className="text-xl font-semibold text-yellow-400 mt-6 text-center md:text-left">
-            Price : ₹{book?.price || 0}
+          <h2 className="text-2xl font-bold text-yellow-400 mt-6 text-center md:text-left">
+            ₹ {book?.price || 0}
           </h2>
 
           <button
             onClick={() => navigate(-1)}
-            className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition duration-200 shadow-md hover:shadow-lg mb-6 self-start mt-2"
+            className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition duration-200 shadow-md hover:shadow-lg mt-4 self-start"
           >
             <svg
               className="w-4 h-4"
@@ -156,11 +162,7 @@ try {
               strokeWidth="2"
               viewBox="0 0 24 24"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15 19l-7-7 7-7"
-              />
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
             </svg>
             Back
           </button>
