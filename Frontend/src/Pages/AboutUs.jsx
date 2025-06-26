@@ -6,9 +6,19 @@ import {
   FaUser,
   FaLock,
   FaSearch,
+  FaStar
 } from 'react-icons/fa';
 import AOS from 'aos';
 import 'aos/dist/aos.css';
+
+const features = [
+  { icon: <FaBook />, text: 'Wide range of categorized books' },
+  { icon: <FaSearch />, text: 'Advanced search and filter tools' },
+  { icon: <FaUser />, text: 'Custom user dashboard experience' },
+  { icon: <FaShoppingCart />, text: 'Secure cart and simple checkout' },
+  { icon: <FaLock />, text: 'Admin tools for inventory & orders' },
+  { icon: <FaStar />, text: 'Top-rated recommendations just for you' }
+];
 
 const About = () => {
   useEffect(() => {
@@ -16,84 +26,72 @@ const About = () => {
   }, []);
 
   return (
-    <div className="bg-black text-white min-h-screen">
-      
-      <div className="relative">
+    <div className="bg-gradient-to-b from-zinc-900 via-black to-zinc-800 text-white min-h-screen">
+      <header className="relative">
         <img
           src="https://imgs.search.brave.com/K6CpDI9b7Q0ACZR5foIdxE6AZVtEUfCaRCZMBj9AslM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/cGl4YWJheS5jb20v/cGhvdG8vMjAyMS8w/MS8yMS8xNS81NC9i/b29rcy01OTM3NzE2/XzY0MC5qcGc"
           alt="Books Banner"
           className="w-full h-80 object-cover opacity-80"
         />
-        <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40">
-          <h1 className="text-4xl md:text-5xl font-bold text-yellow-100 drop-shadow-lg" data-aos="zoom-in">
+        <div className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center">
+          <h1
+            className="text-4xl md:text-6xl font-bold text-yellow-300 tracking-tight drop-shadow-xl"
+            data-aos="zoom-in"
+          >
             About Book Bazaar
           </h1>
         </div>
-      </div>
+      </header>
 
-      <div className="max-w-6xl mx-auto px-6 py-14 md:px-20 space-y-12">
-        
-        <div className="text-center" data-aos="fade-up">
-          <p className="text-lg mb-4">
-            <strong className="text-yellow-100">Welcome to Book Bazaar – Your One-Stop Destination for Books!</strong>
+      <main className="max-w-6xl mx-auto px-6 py-16 space-y-20 md:px-10">
+        <section className="text-center space-y-4" data-aos="fade-up">
+          <h2 className="text-2xl md:text-3xl font-semibold text-yellow-200">
+            Your One-Stop Destination for Books
+          </h2>
+          <p className="text-zinc-300 max-w-3xl mx-auto leading-relaxed">
+            At Book Bazaar, we believe in the joy of reading and the impact of good stories.
+            From passionate bookworms to curious explorers, our platform brings everyone closer to the world of books with modern tools and a seamless experience.
           </p>
-          <p className="text-zinc-300 max-w-3xl mx-auto">
-            At Book Bazaar, we believe in the power of reading and the joy of discovering new books.
-            Our platform is designed to simplify and modernize the way you buy books online.
-            Whether you're a passionate reader or a casual browser – this space is built for you.
-          </p>
-        </div>
+        </section>
 
-        <div
-          className="h-1 w-32 mx-auto bg-gradient-to-r from-yellow-400 via-pink-500 to-purple-600 rounded-full"
-          data-aos="zoom-in"
-        ></div>
-
-        <div data-aos="fade-right">
-          <h2 className="text-2xl font-semibold mb-3 text-yellow-100 flex items-center gap-2">
+        <section data-aos="fade-right">
+          <h3 className="text-xl font-semibold text-yellow-300 flex items-center gap-3 mb-4">
             <FaRocket /> Our Mission
-          </h2>
-          <p className="text-zinc-300">
-            To make books more accessible, affordable, and enjoyable for everyone by offering a
-            seamless, secure, and user-friendly online book shopping experience.
+          </h3>
+          <p className="text-zinc-400 leading-loose">
+            We aim to revolutionize book shopping by offering an intuitive, affordable, and enjoyable digital experience — making literature accessible for all.
           </p>
-        </div>
+        </section>
 
-        <div data-aos="fade-left">
-          <h2 className="text-2xl font-semibold mb-4 text-yellow-100 flex items-center gap-2">
+        <section data-aos="fade-left">
+          <h3 className="text-xl font-semibold text-yellow-300 flex items-center gap-3 mb-4">
             <FaBook /> What We Offer
-          </h2>
-          <ul className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-            {[
-              { icon: <FaBook />, text: 'A vast collection of books, neatly categorized' },
-              { icon: <FaSearch />, text: 'Smart search and filters' },
-              { icon: <FaUser />, text: 'Personalized user dashboard' },
-              { icon: <FaShoppingCart />, text: 'Secure cart and easy checkout' },
-              { icon: <FaLock />, text: 'Admin panel for managing inventory and orders' },
-            ].map((item, idx) => (
-              <li
+          </h3>
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {features.map((item, idx) => (
+              <div
                 key={idx}
-                className="bg-zinc-900 p-4 rounded-lg flex items-center gap-3 hover:border-yellow-300 hover:shadow-yellow-400/30 border border-transparent transition-all duration-300"
+                className="bg-zinc-900 border border-zinc-700 rounded-lg p-6 hover:shadow-lg hover:border-yellow-300 transition-all"
                 data-aos="fade-up"
                 data-aos-delay={idx * 100}
               >
-                <span className="text-yellow-300 text-xl">{item.icon}</span>
-                <span className="text-zinc-200">{item.text}</span>
-              </li>
+                <div className="text-yellow-400 text-2xl mb-2">{item.icon}</div>
+                <p className="text-zinc-200 font-medium">{item.text}</p>
+              </div>
             ))}
-          </ul>
-        </div>
+          </div>
+        </section>
 
-        <div className="text-center space-y-4" data-aos="fade-up">
-          <p className="text-lg font-medium">
-            Whether you're here to buy your next favorite novel or explore exciting new titles – 
-            <strong className="text-yellow-100"> Book Bazaar is your go-to place for book discovery.</strong>
+        <section className="text-center space-y-3" data-aos="fade-up">
+          <p className="text-lg text-zinc-300">
+            Whether you're hunting your next favorite novel or just exploring —
+            <span className="text-yellow-300 font-semibold"> Book Bazaar is where your book journey begins.</span>
           </p>
-          <p className="text-yellow-100 italic">
-            Let’s build a smarter reading community, together!
+          <p className="italic text-yellow-100">
+            Let’s turn every page together, one story at a time.
           </p>
-        </div>
-      </div>
+        </section>
+      </main>
     </div>
   );
 };

@@ -1,14 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import AOS from "aos";
+import "aos/dist/aos.css";
 import { useAuth } from "../Components/Context/AuthContext";
-import { motion } from "framer-motion";
+import { FaUser, FaLock } from "react-icons/fa";
 
 const Login = () => {
   const { login } = useAuth();
   const [formdata, setFormdata] = useState({ name: "", password: "" });
   const [error, setError] = useState("");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    AOS.init({ duration: 800 });
+  }, []);
 
   const handleChange = (e) => {
     setFormdata({ ...formdata, [e.target.name]: e.target.value });
@@ -33,53 +39,69 @@ const Login = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gradient-to-r from-blue-100 via-white to-pink-100">
-      <motion.div
-        initial={{ opacity: 0, y: -30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md border border-gray-200"
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-200 via-pink-100 to-purple-200 px-4">
+      <div
+        data-aos="zoom-in"
+        className="bg-white/30 backdrop-blur-lg shadow-2xl p-8 rounded-3xl w-full max-w-md border border-white/20"
       >
-        <h2 className="text-3xl font-bold mb-6 text-center text-blue-600">Welcome Back 👋</h2>
-        {error && <p className="text-red-500 mb-4 text-sm text-center">{error}</p>}
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            name="name"
-            placeholder="Username"
-            value={formdata.name}
-            onChange={handleChange}
-            className="border border-gray-300 p-3 mb-4 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
-            required
-          />
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={formdata.password}
-            onChange={handleChange}
-            className="border border-gray-300 p-3 mb-6 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
-            required
-          />
-          <motion.button
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
+        <h2 className="text-4xl font-bold mb-6 text-center text-blue-700 drop-shadow">
+          Welcome Back 👋
+        </h2>
+
+        {error && (
+          <p className="text-red-500 text-sm text-center mb-4">{error}</p>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Username */}
+          <div className="relative">
+            <span className="absolute top-3.5 left-4 text-blue-500">
+              <FaUser />
+            </span>
+            <input
+              type="text"
+              name="name"
+              placeholder="Username"
+              value={formdata.name}
+              onChange={handleChange}
+              className="pl-11 pr-4 py-3 w-full rounded-lg bg-white/80 text-gray-700 border border-gray-300 focus:ring-2 focus:ring-blue-300 focus:outline-none"
+              required
+            />
+          </div>
+
+          {/* Password */}
+          <div className="relative">
+            <span className="absolute top-3.5 left-4 text-blue-500">
+              <FaLock />
+            </span>
+            <input
+              type="password"
+              name="password"
+              placeholder="Password"
+              value={formdata.password}
+              onChange={handleChange}
+              className="pl-11 pr-4 py-3 w-full rounded-lg bg-white/80 text-gray-700 border border-gray-300 focus:ring-2 focus:ring-blue-300 focus:outline-none"
+              required
+            />
+          </div>
+
+          {/* Submit Button */}
+          <button
+            data-aos="fade-up"
             type="submit"
-            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold p-3 w-full rounded-lg transition-all duration-200"
+            className="mt-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold p-3 w-full rounded-lg transition-all duration-200 shadow-md"
           >
             Login
-          </motion.button>
+          </button>
         </form>
-        <p className="mt-6 text-center text-sm text-gray-600">
+
+        <p className="mt-6 text-center text-sm text-zinc-700">
           Don’t have an account?{" "}
-          <a
-            href="/signup"
-            className="text-blue-500 font-medium hover:underline transition-all"
-          >
+          <a href="/signup" className="text-blue-600 font-medium hover:underline">
             Sign Up
           </a>
         </p>
-      </motion.div>
+      </div>
     </div>
   );
 };

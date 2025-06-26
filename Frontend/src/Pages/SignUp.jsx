@@ -1,12 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import AOS from "aos";
+import "aos/dist/aos.css";
 import { toast } from "react-toastify";
-import { motion } from "framer-motion";
+import { FaUser, FaEnvelope, FaLock, FaMapMarkerAlt } from "react-icons/fa";
 import "react-toastify/dist/ReactToastify.css";
-
-// Place this in your root component if not already added:
-// toast.configure();
 
 const Signup = () => {
   const [formdata, setFormdata] = useState({
@@ -17,6 +16,10 @@ const Signup = () => {
   });
 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    AOS.init({ duration: 800 });
+  }, []);
 
   const handleChange = (e) => {
     setFormdata({ ...formdata, [e.target.name]: e.target.value });
@@ -40,68 +43,51 @@ const Signup = () => {
   };
 
   return (
-    <div className="flex justify-center items-center h-screen bg-gradient-to-br from-blue-100 via-white to-pink-100">
-      <motion.div
-        initial={{ opacity: 0, y: -40 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md border border-gray-200"
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-200 via-pink-100 to-purple-200 px-4">
+      <div
+        data-aos="zoom-in"
+        className="bg-white/30 backdrop-blur-lg shadow-2xl p-8 rounded-3xl w-full max-w-md border border-white/20"
       >
-        <h2 className="text-3xl font-bold mb-6 text-center text-blue-600">Create Account</h2>
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            name="name"
-            placeholder="Full Name"
-            value={formdata.name}
-            onChange={handleChange}
-            className="border border-gray-300 p-3 mb-4 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
-            required
-          />
-          <input
-            type="email"
-            name="email"
-            placeholder="Email Address"
-            value={formdata.email}
-            onChange={handleChange}
-            className="border border-gray-300 p-3 mb-4 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
-            required
-          />
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={formdata.password}
-            onChange={handleChange}
-            className="border border-gray-300 p-3 mb-4 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
-            required
-          />
-          <input
-            type="text"
-            name="address"
-            placeholder="Address"
-            value={formdata.address}
-            onChange={handleChange}
-            className="border border-gray-300 p-3 mb-6 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-300"
-            required
-          />
+        <h2 className="text-4xl font-bold mb-6 text-center text-blue-700 drop-shadow">
+          Create Account
+        </h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {[ 
+            { icon: <FaUser />, name: "name", type: "text", placeholder: "Full Name" },
+            { icon: <FaEnvelope />, name: "email", type: "email", placeholder: "Email Address" },
+            { icon: <FaLock />, name: "password", type: "password", placeholder: "Password" },
+            { icon: <FaMapMarkerAlt />, name: "address", type: "text", placeholder: "Address" },
+          ].map((field, index) => (
+            <div key={index} className="relative">
+              <span className="absolute top-3.5 left-4 text-blue-500">{field.icon}</span>
+              <input
+                name={field.name}
+                type={field.type}
+                placeholder={field.placeholder}
+                value={formdata[field.name]}
+                onChange={handleChange}
+                className="pl-11 pr-4 py-3 w-full rounded-lg bg-white/80 text-gray-700 border border-gray-300 focus:ring-2 focus:ring-blue-300 focus:outline-none"
+                required
+              />
+            </div>
+          ))}
 
-          <motion.button
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
+          <button
             type="submit"
-            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold p-3 w-full rounded-lg transition-all duration-200"
+            data-aos="fade-up"
+            className="mt-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold p-3 w-full rounded-lg transition-all duration-200 shadow-md"
           >
             Sign Up
-          </motion.button>
+          </button>
         </form>
-        <p className="mt-6 text-center text-sm text-gray-600">
+
+        <p className="mt-6 text-center text-sm text-zinc-700">
           Already have an account?{" "}
-          <a href="/signin" className="text-blue-500 font-medium hover:underline">
+          <a href="/signin" className="text-blue-600 font-medium hover:underline">
             Login
           </a>
         </p>
-      </motion.div>
+      </div>
     </div>
   );
 };
