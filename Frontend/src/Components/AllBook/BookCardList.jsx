@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 import { Link } from 'react-router-dom';
 
 const BookCardList = () => {
@@ -8,6 +10,8 @@ const BookCardList = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
+    AOS.init({ duration: 800, once: true });
+
     axios.get('http://localhost:4020/website/api/book/getAll')
       .then(response => {
         setBooks(response.data.data || []);
@@ -25,7 +29,10 @@ const BookCardList = () => {
 
   return (
     <div className="px-6 py-12 max-w-7xl mx-auto">
-      <h2 className="text-4xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 via-pink-500 to-yellow-400 mb-12 animate-fadeDown">
+      <h2
+        className="text-4xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 via-pink-500 to-yellow-400 mb-12"
+        data-aos="fade-down"
+      >
         📚 All Books
       </h2>
 
@@ -33,8 +40,9 @@ const BookCardList = () => {
         {books.map((book, index) => (
           <Link to={`/view-details/${book._id}`} key={book._id}>
             <div
-              className="bg-white rounded-2xl shadow-lg border border-zinc-200 hover:shadow-2xl hover:border-indigo-400 transition duration-300 transform hover:-translate-y-1 animate-fadeUp"
-              style={{ animationDelay: `${index * 0.05}s`, animationFillMode: 'both' }}
+              className="bg-white rounded-2xl shadow-lg border border-zinc-200 hover:shadow-2xl hover:border-indigo-400 transition duration-300 transform hover:-translate-y-1"
+              data-aos="fade-up"
+              data-aos-delay={index * 50}
             >
               <div className="overflow-hidden border-4 border-indigo-400 rounded-xl">
                 <img
