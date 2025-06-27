@@ -78,7 +78,7 @@ const Cart = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0f0f0f] text-white flex flex-col px-4 py-8">
+    <div className="min-h-screen bg-[#0f0f0f] text-white flex flex-col px-4 py-8 mt-10">
       <h1
         data-aos="fade-down"
         className="text-4xl font-extrabold mb-8 border-b pb-4 border-gray-700"
