@@ -23,7 +23,7 @@ const Navbar = () => {
   const links = isAuthenticated ? [...commonLinks, ...privateLinks] : commonLinks;
 
   return (
-    <div className='bg-zinc-800 text-white px-8 py-2 flex items-center justify-between relative'>
+    <div className='bg-zinc-800 text-white px-8 py-2 flex items-center justify-between fixed top-0 left-0 w-full z-20 shadow-lg'>
     
       <Link to="/" className='flex items-center gap-2'>
         <img src={logo} alt="Logo" className='w-10 h-10' />

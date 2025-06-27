@@ -1,8 +1,14 @@
 import React, { useEffect, useState } from 'react';
+import AOS from 'aos';
+import 'aos/dist/aos.css';
 
 const OrderCard = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    AOS.init({ duration: 800 });
+  }, []);
 
   const headers = {
     id: localStorage.getItem("id"),
@@ -17,7 +23,7 @@ const OrderCard = () => {
         });
 
         const result = await res.json();
-        setOrders(result.data); // assuming the array is in result.data
+        setOrders(result.data);
         setLoading(false);
       } catch (error) {
         console.error("Error fetching orders:", error);
@@ -30,7 +36,7 @@ const OrderCard = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-64">
+      <div className="flex items-center justify-center h-64" data-aos="fade-in">
         <span className="text-lg text-gray-600">Loading orders...</span>
       </div>
     );
@@ -38,7 +44,7 @@ const OrderCard = () => {
 
   if (!orders || orders.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-20">
+      <div className="flex flex-col items-center justify-center py-20" data-aos="zoom-in">
         <img
           src="https://cdn-icons-png.flaticon.com/512/4076/4076549.png"
           alt="No Orders"
@@ -51,17 +57,19 @@ const OrderCard = () => {
 
   return (
     <div className="p-6">
-      <h1 className="text-2xl font-semibold mb-6 text-center">Your Orders</h1>
+      <h1 className="text-2xl font-semibold mb-6 text-center" data-aos="fade-down">Your Orders</h1>
       <div className="grid gap-6 md:grid-cols-2">
-        {orders.map((order) => (
+        {orders.map((order, orderIndex) => (
           <div
             key={order._id}
             className="bg-white shadow-md rounded-lg p-4 border border-gray-200"
+            data-aos="fade-up"
+            data-aos-delay={orderIndex * 100}
           >
             {order.book.map((bookItem) => (
               <div key={bookItem._id} className="mb-4 border-b pb-4 flex gap-4">
                 <img
-                  src={bookItem.url || "https://via.placeholder.com/100"} // fallback image
+                  src={bookItem.url || "https://via.placeholder.com/100"}
                   alt={bookItem.title}
                   className="w-24 h-32 object-cover rounded"
                 />
