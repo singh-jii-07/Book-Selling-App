@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { toast } from "react-toastify"; // Ensure toast is imported
+import { toast } from "react-toastify";
 
 const BookForm = () => {
   const [formData, setFormData] = useState({
@@ -74,7 +74,7 @@ const headers = {
             onChange={handleChange}
             placeholder={placeholder}
             className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition placeholder:text-gray-400"
-            required // ✅ Makes the field required
+            required // 
           />
         ))}
 

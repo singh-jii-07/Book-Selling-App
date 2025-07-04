@@ -49,7 +49,12 @@ const BookDetails = () => {
       console.error("Failed to add to cart:", error);
     }
   };
-
+const DeleteBook= async()=>{
+await axios.delete("http://localhost:4020/website/api/book/deletBook", { headers })
+console.log("Book deleted successfully");
+toast.success("Book deleted successfully");
+navigate("/all-books");
+}
   useEffect(() => {
     AOS.init({ duration: 800, once: true });
 
@@ -107,20 +112,22 @@ const BookDetails = () => {
 
           {isAuthenticated && user?.role === "admin" && (
             <div className="flex gap-4 mt-6">
-              <Link
-                to={`/edit-book/${id}`}
-                className="bg-yellow-600 hover:bg-yellow-700 p-3 rounded-full shadow-md transition"
+              
+               <button  className="bg-yellow-600 hover:bg-yellow-700 p-3 rounded-full shadow-md transition"
                 data-aos="fade-up"
-                data-aos-delay="100"
-              >
-                <MdEdit className="text-white text-xl" />
-              </Link>
+                data-aos-delay="100">
+                 <MdEdit className="text-white text-xl" />
+             
+               </button>
+               
+              
+               
               <button
                 className="bg-red-600 hover:bg-red-700 p-3 rounded-full shadow-md transition"
                 data-aos="fade-up"
                 data-aos-delay="150"
               >
-                <MdDelete className="text-white text-xl" />
+                <MdDelete className="text-white text-xl" onClick={DeleteBook} />
               </button>
                   <Link
       to="/AdminForm"
