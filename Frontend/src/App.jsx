@@ -10,6 +10,7 @@ import SignIn from "./Pages/SignIn";
 import SignUp from "./Pages/SignUp";
 import Details from "./Components/details/Details";
 import Order from "./Components/Profile/Order";
+import AdminForm from "./Components/Profile/AdminForm";
 
 function App() {
   const router = createBrowserRouter([
@@ -76,6 +77,15 @@ function App() {
           
         </>
       ),
+    },
+    {
+      path: "/AdminForm",
+      element: (
+        <>
+        <Navbar/>
+        <AdminForm/>
+        </>
+      )
     },
     {
       path: "/signup",

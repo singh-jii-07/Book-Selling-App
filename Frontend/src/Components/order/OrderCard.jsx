@@ -56,7 +56,7 @@ const OrderCard = () => {
   }
 
   return (
-    <div className="p-6">
+    <div className="p-6 mt-5">
       <h1 className="text-2xl font-semibold mb-6 text-center" data-aos="fade-down">Your Orders</h1>
       <div className="grid gap-6 md:grid-cols-2">
         {orders.map((order, orderIndex) => (
