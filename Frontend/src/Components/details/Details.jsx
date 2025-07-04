@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { FaHeart, FaCartPlus } from "react-icons/fa";
-import { MdEdit, MdDelete,MdAdd } from "react-icons/md";
+import { MdEdit, MdDelete } from "react-icons/md";
 import { toast } from "react-toastify";
 import { useAuth } from "../Context/AuthContext";
 import AOS from "aos";
@@ -129,14 +129,7 @@ navigate("/all-books");
               >
                 <MdDelete className="text-white text-xl" onClick={DeleteBook} />
               </button>
-                  <Link
-      to="/AdminForm"
-      className="bg-green-600 hover:bg-green-700 p-3 rounded-full shadow-md transition"
-      data-aos="fade-up"
-      data-aos-delay="125"
-    >
-      <MdAdd className="text-white text-xl" />
-    </Link>
+                
 
             </div>
           )}

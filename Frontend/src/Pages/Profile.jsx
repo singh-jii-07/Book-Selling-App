@@ -2,13 +2,15 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Sidebar from '../Components/Profile/Sidebar';
 import Favourites from '../Components/Profile/Favourites'
+import Order from '../Components/Profile/Order';
+import { useAuth } from '../Components/Context/AuthContext';
 
 const Profile = () => {
   const headers = {
     id: localStorage.getItem("id"),
     authorization: `Bearer ${localStorage.getItem("token")}`
   };
-
+const {  user } = useAuth();
   const [profile, setProfile] = useState(null);
   const [error, setError] = useState("");
 
@@ -44,7 +46,19 @@ const Profile = () => {
             <Sidebar data={profile} />
           </div>
           <div className='w-full md:w-5/6 mt-8'>
-           <Favourites/>
+          {
+            user?.role==="user"&&(
+
+              <Favourites/>
+            )
+          }
+          {
+            user?.role==="admin"&&(
+              <div className='text-center text-2xl font-bold'>
+              <Order/>
+              </div>
+            )
+          }
           </div>
         </>
       )}
