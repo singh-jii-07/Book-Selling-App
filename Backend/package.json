@@ -5,9 +5,9 @@
   "license": "ISC",
   "author": "",
   "type": "module",
-  "main": "Backend/server.js",
+  "main": "server.js",
 "scripts": {
-  "start": "node Backend/server.js"
+  "start": "node server.js"
 }
   ,
 
