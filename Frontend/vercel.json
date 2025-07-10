@@ -1,0 +1,4 @@
+{
+  "builds": [{ "src": "Frontent/index.html", "use": "@vercel/static" }],
+  "routes": [{ "src": "/(.*)", "dest": "Frontent/index.html" }]
+}
