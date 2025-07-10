@@ -5,12 +5,16 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import { useAuth } from "../Components/Context/AuthContext";
 import { FaUser, FaLock } from "react-icons/fa";
+import { FiEye, FiEyeOff } from "react-icons/fi";
+
 
 const Login = () => {
   const { login } = useAuth();
   const [formdata, setFormdata] = useState({ name: "", password: "" });
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
+
 
   useEffect(() => {
     AOS.init({ duration: 800 });
@@ -69,23 +73,33 @@ const Login = () => {
             />
           </div>
 
-          {/* Password */}
+          
           <div className="relative">
             <span className="absolute top-3.5 left-4 text-blue-500">
               <FaLock />
             </span>
-            <input
-              type="password"
-              name="password"
-              placeholder="Password"
-              value={formdata.password}
-              onChange={handleChange}
-              className="pl-11 pr-4 py-3 w-full rounded-lg bg-white/80 text-gray-700 border border-gray-300 focus:ring-2 focus:ring-blue-300 focus:outline-none"
-              required
-            />
+           <div className="relative w-full">
+  <input
+    type={showPassword ? "text" : "password"}
+    name="password"
+    placeholder="Password"
+    value={formdata.password}
+    onChange={handleChange}
+    className="pl-11 pr-10 py-3 w-full rounded-lg bg-white/80 text-gray-700 border border-gray-300 focus:ring-2 focus:ring-blue-300 focus:outline-none"
+    required
+  />
+
+  <button
+    type="button"
+    onClick={() => setShowPassword((prev) => !prev)}
+    className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500 focus:outline-none"
+  >
+    {showPassword ? <FiEyeOff className="w-5 h-5" /> : <FiEye className="w-5 h-5" />}
+  </button>
+</div>
+
           </div>
 
-          {/* Submit Button */}
           <button
             data-aos="fade-up"
             type="submit"
