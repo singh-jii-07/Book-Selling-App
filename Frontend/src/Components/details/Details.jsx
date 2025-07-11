@@ -123,13 +123,7 @@ const BookDetails = () => {
 
           {isAuthenticated && user?.role === "admin" && (
             <div className="flex gap-4 mt-6">
-              <button
-                className="bg-yellow-600 hover:bg-yellow-700 p-3 rounded-full shadow-md transition"
-                data-aos="fade-up"
-                data-aos-delay="100"
-              >
-                <MdEdit className="text-white text-xl" />
-              </button>
+              
               <button
                 className="bg-red-600 hover:bg-red-700 p-3 rounded-full shadow-md transition"
                 data-aos="fade-up"
@@ -142,7 +136,7 @@ const BookDetails = () => {
           )}
         </div>
 
-        {/* Right - Book Info */}
+    
         <div className="md:w-1/2 flex flex-col justify-center" data-aos="fade-left">
           <h1 className="text-4xl font-extrabold mb-3 text-center md:text-left text-indigo-300 drop-shadow">
             {book?.title || "Title not available"}
@@ -168,7 +162,7 @@ const BookDetails = () => {
             ₹ {book?.price || 0}
           </h2>
 
-          {/* Rating Stars */}
+          
           <div className="mt-6">
             <h3 className="text-md text-gray-300 mb-2">Rate this book:</h3>
             <div className="flex gap-2">
