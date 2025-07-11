@@ -1,46 +1,36 @@
 import React, { useEffect, useState } from 'react';
 import AOS from 'aos';
+import axios from 'axios';
 import 'aos/dist/aos.css';
 
 const OrderCard = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    AOS.init({ duration: 800 });
-  }, []);
-
+  const userId = localStorage.getItem("id");
   const headers = {
-    id: localStorage.getItem("id"),
+    id: userId,
     authorization: `Bearer ${localStorage.getItem("token")}`,
   };
 
   useEffect(() => {
-    const fetchOrders = async () => {
+    AOS.init({ duration: 800 });
+
+    const fetchUserOrders = async () => {
       try {
-        const res = await fetch("http://localhost:4020/website/api/book/getorderbook", {
+        const res = await axios.get(`http://localhost:4020/website/api/book/userorderbook/${userId}`, {
           headers,
         });
-        const result = await res.json();
-
-        const currentUserId = localStorage.getItem("id");
-
-    
-        // const userOrders = result.data.filter((order) => {
-        //   const orderUserId = typeof order.userId === 'object' ? order.userId._id : order.userId;
-        //   return String(orderUserId).trim() === String(currentUserId).trim();
-        // });
-       
-        setOrders(result.data);
-        setLoading(false);
+        setOrders(res.data.data);
       } catch (error) {
-        console.error("Error fetching orders:", error);
+        console.error("Error fetching user orders:", error);
+      } finally {
         setLoading(false);
       }
     };
 
-    fetchOrders();
-  }, []);
+    fetchUserOrders();
+  }, [userId]);
 
   if (loading) {
     return (
@@ -84,8 +74,8 @@ const OrderCard = () => {
                 <div>
                   <h2 className="text-xl font-bold text-indigo-700">{bookItem.title}</h2>
                   <p className="text-gray-700">Author: {bookItem.author}</p>
-                  <p className="text-gray-600">Language: {bookItem.language}</p>
-                  <p className="text-gray-500 text-sm mt-1">{bookItem.description}</p>
+                  <p className="text-gray-600">Language: {bookItem.language || 'N/A'}</p>
+                  <p className="text-gray-500 text-sm mt-1 line-clamp-2">{bookItem.description}</p>
                 </div>
               </div>
             ))}

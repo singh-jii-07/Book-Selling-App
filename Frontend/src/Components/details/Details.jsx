@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate, Link } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import { FaHeart, FaCartPlus } from "react-icons/fa";
+import { FaHeart, FaCartPlus, FaStar } from "react-icons/fa";
 import { MdEdit, MdDelete } from "react-icons/md";
 import { toast } from "react-toastify";
 import { useAuth } from "../Context/AuthContext";
@@ -16,6 +16,9 @@ const BookDetails = () => {
   const [error, setError] = useState("");
   const { isAuthenticated, user } = useAuth();
 
+  const [userRating, setUserRating] = useState(0);
+  const [hoverRating, setHoverRating] = useState(0);
+
   const headers = {
     id: localStorage.getItem("id"),
     authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -24,13 +27,12 @@ const BookDetails = () => {
 
   const HandleFavourite = async () => {
     try {
-      const res = await axios.put(
+      await axios.put(
         "http://localhost:4020/website/api/book/addFavourite",
         {},
         { headers }
       );
       toast.success("Book added to favourites!");
-      console.log(res.data);
     } catch (error) {
       console.error("Failed to add to favourites:", error);
     }
@@ -38,23 +40,25 @@ const BookDetails = () => {
 
   const HandleCart = async () => {
     try {
-      const res = await axios.put(
+      await axios.put(
         "http://localhost:4020/website/api/book/addCart",
         {},
         { headers }
       );
       toast.success("Book added to cart!");
-      console.log(res.data);
     } catch (error) {
       console.error("Failed to add to cart:", error);
     }
   };
-const DeleteBook= async()=>{
-await axios.delete("http://localhost:4020/website/api/book/deletBook", { headers })
-console.log("Book deleted successfully");
-toast.success("Book deleted successfully");
-navigate("/all-books");
-}
+
+  const DeleteBook = async () => {
+    await axios.delete("http://localhost:4020/website/api/book/deletBook", {
+      headers,
+    });
+    toast.success("Book deleted successfully");
+    navigate("/all-books");
+  };
+
   useEffect(() => {
     AOS.init({ duration: 800, once: true });
 
@@ -63,6 +67,12 @@ navigate("/all-books");
       .then((res) => {
         setBook(res.data.data);
         setLoading(false);
+
+        // Load previous rating from localStorage
+        const savedRating = localStorage.getItem(`rating-${id}`);
+        if (savedRating) {
+          setUserRating(Number(savedRating));
+        }
       })
       .catch((err) => {
         console.error(err);
@@ -82,6 +92,7 @@ navigate("/all-books");
         className="max-w-6xl w-full flex flex-col md:flex-row gap-12 bg-[#2a2a2a] rounded-xl shadow-2xl p-8 border border-zinc-700"
         data-aos="zoom-in"
       >
+        {/* Left - Book Image & Actions */}
         <div className="md:w-1/2 flex justify-center items-center flex-col" data-aos="fade-right">
           <img
             src={book?.url || "https://via.placeholder.com/300x400"}
@@ -112,29 +123,26 @@ navigate("/all-books");
 
           {isAuthenticated && user?.role === "admin" && (
             <div className="flex gap-4 mt-6">
-              
-               <button  className="bg-yellow-600 hover:bg-yellow-700 p-3 rounded-full shadow-md transition"
+              <button
+                className="bg-yellow-600 hover:bg-yellow-700 p-3 rounded-full shadow-md transition"
                 data-aos="fade-up"
-                data-aos-delay="100">
-                 <MdEdit className="text-white text-xl" />
-             
-               </button>
-               
-              
-               
+                data-aos-delay="100"
+              >
+                <MdEdit className="text-white text-xl" />
+              </button>
               <button
                 className="bg-red-600 hover:bg-red-700 p-3 rounded-full shadow-md transition"
                 data-aos="fade-up"
                 data-aos-delay="150"
+                onClick={DeleteBook}
               >
-                <MdDelete className="text-white text-xl" onClick={DeleteBook} />
+                <MdDelete className="text-white text-xl" />
               </button>
-                
-
             </div>
           )}
         </div>
 
+        {/* Right - Book Info */}
         <div className="md:w-1/2 flex flex-col justify-center" data-aos="fade-left">
           <h1 className="text-4xl font-extrabold mb-3 text-center md:text-left text-indigo-300 drop-shadow">
             {book?.title || "Title not available"}
@@ -160,9 +168,38 @@ navigate("/all-books");
             ₹ {book?.price || 0}
           </h2>
 
+          {/* Rating Stars */}
+          <div className="mt-6">
+            <h3 className="text-md text-gray-300 mb-2">Rate this book:</h3>
+            <div className="flex gap-2">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <FaStar
+                  key={star}
+                  size={24}
+                  className={`cursor-pointer transition transform hover:scale-110 ${
+                    (hoverRating || userRating) >= star
+                      ? "text-yellow-400"
+                      : "text-gray-500"
+                  }`}
+                  onClick={() => {
+                    setUserRating(star);
+                    localStorage.setItem(`rating-${id}`, star);
+                  }}
+                  onMouseEnter={() => setHoverRating(star)}
+                  onMouseLeave={() => setHoverRating(0)}
+                />
+              ))}
+            </div>
+            {userRating > 0 && (
+              <p className="text-sm text-green-400 mt-2">
+                You rated this book {userRating} ⭐
+              </p>
+            )}
+          </div>
+
           <button
             onClick={() => navigate(-1)}
-            className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition duration-200 shadow-md hover:shadow-lg mt-4 self-start"
+            className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition duration-200 shadow-md hover:shadow-lg mt-6 self-start"
           >
             <svg
               className="w-4 h-4"
