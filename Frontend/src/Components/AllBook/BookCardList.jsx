@@ -33,14 +33,14 @@ const BookCardList = () => {
   useEffect(() => {
     let updatedBooks = books;
 
-    // Apply search
+    
     if (searchQuery.trim() !== '') {
       updatedBooks = updatedBooks.filter((book) =>
         `${book.title} ${book.author}`.toLowerCase().includes(searchQuery.toLowerCase())
       );
     }
 
-    // Apply price filter
+    
     switch (priceFilter) {
       case 'below200':
         updatedBooks = updatedBooks.filter((book) => book.price < 200);
