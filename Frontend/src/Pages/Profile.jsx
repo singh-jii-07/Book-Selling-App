@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Sidebar from '../Components/Profile/Sidebar';
 import Favourites from '../Components/Profile/Favourites'
-import Order from '../Components/Profile/Order';
+// import Order from '../Components/Profile/Order';
+import Adminorder from '../Components/order/Adminorder';
 import { useAuth } from '../Components/Context/AuthContext';
 
 const Profile = () => {
@@ -55,7 +56,8 @@ const {  user } = useAuth();
           {
             user?.role==="admin"&&(
               <div className='text-center text-2xl font-bold'>
-              <Order/>
+              {/* <Order/> */}
+              <Adminorder/>
               </div>
             )
           }
