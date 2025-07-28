@@ -9,10 +9,12 @@ const BooksList = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  const baseURL = import.meta.env.VITE_BACKEND_URL;
+
   useEffect(() => {
     AOS.init({ duration: 1000, once: true });
 
-    axios.get('http://localhost:4020/website/api/book/getFour')
+    axios.get(baseURL)
       .then(response => {
         setBooks(response.data.data);
         setLoading(false);
