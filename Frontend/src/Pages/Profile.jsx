@@ -18,7 +18,7 @@ const {  user } = useAuth();
   useEffect(() => {
     const fetch = async () => {
       try {
-        const res = await axios.get("http://localhost:4020/website/api/user/user-info", { headers });
+        const res = await axios.get("https://book-selling-app-p08i.onrender.com/website/api/user/user-info", { headers });
         console.log(res.data.data);
         setProfile(res.data.data);
       } catch (err) {

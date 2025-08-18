@@ -23,7 +23,7 @@ const Cart = () => {
   const fetchCart = async () => {
     try {
       const res = await axios.get(
-        "http://localhost:4020/website/api/book/getCart",
+        "https://book-selling-app-p08i.onrender.com/website/api/book/getCart",
         { headers: baseHeaders }
       );
 
@@ -43,7 +43,7 @@ const Cart = () => {
   const handleRemove = async (bookId) => {
     try {
       await axios.put(
-        `http://localhost:4020/website/api/book/deleteCart/${bookId}`,
+        `https://book-selling-app-p08i.onrender.com/website/api/book/deleteCart/${bookId}`,
         {},
         { headers: baseHeaders }
       );
@@ -89,7 +89,7 @@ const Cart = () => {
 
     try {
       await axios.post(
-        "http://localhost:4020/website/api/book/orderbook",
+        "https://book-selling-app-p08i.onrender.com/website/api/book/orderbook",
         { order: bookIds },
         { headers: baseHeaders }
       );

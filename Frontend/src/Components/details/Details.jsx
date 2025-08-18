@@ -28,7 +28,7 @@ const BookDetails = () => {
   const HandleFavourite = async () => {
     try {
       await axios.put(
-        "http://localhost:4020/website/api/book/addFavourite",
+        "https://book-selling-app-p08i.onrender.com/website/api/book/addFavourite",
         {},
         { headers }
       );
@@ -41,7 +41,7 @@ const BookDetails = () => {
   const HandleCart = async () => {
     try {
       await axios.put(
-        "http://localhost:4020/website/api/book/addCart",
+        "https://book-selling-app-p08i.onrender.com/website/api/book/addCart",
         {},
         { headers }
       );
@@ -52,7 +52,7 @@ const BookDetails = () => {
   };
 
   const DeleteBook = async () => {
-    await axios.delete("http://localhost:4020/website/api/book/deletBook", {
+    await axios.delete("https://book-selling-app-p08i.onrender.com/website/api/book/deletBook", {
       headers,
     });
     toast.success("Book deleted successfully");
@@ -63,7 +63,7 @@ const BookDetails = () => {
     AOS.init({ duration: 800, once: true });
 
     axios
-      .get(`http://localhost:4020/website/api/book/bookbyId/${id}`)
+      .get(`https://book-selling-app-p08i.onrender.com/website/api/book/bookbyId/${id}`)
       .then((res) => {
         setBook(res.data.data);
         setLoading(false);
