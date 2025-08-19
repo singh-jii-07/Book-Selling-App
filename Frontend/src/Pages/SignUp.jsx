@@ -29,7 +29,7 @@ const Signup = () => {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "https://book-selling-app-p08i.onrender.com/website/api/user/signup",
+        "http://localhost:4020/website/api/user/signup",
         formdata
       );
       if (res.status === 201 || res.status === 200) {

@@ -16,7 +16,7 @@ const BookCardList = () => {
     AOS.init({ duration: 800, once: true });
 
     axios
-      .get('https://book-selling-app-p08i.onrender.com/website/api/book/getAll')
+      .get('http://localhost:4020/website/api/book/getAll')
       .then((response) => {
         const allBooks = response.data.data || [];
         setBooks(allBooks);

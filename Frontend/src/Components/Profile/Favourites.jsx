@@ -22,7 +22,7 @@ const Favourites = () => {
     const fetchFavourites = async () => {
       try {
         const res = await axios.get(
-          "https://book-selling-app-p08i.onrender.com/website/api/book/getfavourite",
+          "http://localhost:4020/website/api/book/getfavourite",
           { headers: baseHeaders }
         );
         setFavourites(res.data.data);
@@ -37,7 +37,7 @@ const Favourites = () => {
   const handleRemoveFavourite = async (bookId) => {
     try {
       await axios.put(
-        "https://book-selling-app-p08i.onrender.com/website/api/book/deletFavourite",
+        "http://localhost:4020/website/api/book/deletFavourite",
         {},
         {
           headers: {

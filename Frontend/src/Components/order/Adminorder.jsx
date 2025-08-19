@@ -17,7 +17,7 @@ const AllOrders = () => {
 
     const fetchOrders = async () => {
       try {
-        const res = await axios.get('https://book-selling-app-p08i.onrender.com/website/api/book/getorderbook', {
+        const res = await axios.get('http://localhost:4020/website/api/book/getorderbook', {
           headers,
         });
         setOrders(res.data.data);
