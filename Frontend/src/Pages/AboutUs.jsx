@@ -1,99 +1,116 @@
-import React, { useEffect } from 'react';
-import {
-  FaBook,
-  FaRocket,
-  FaShoppingCart,
-  FaUser,
-  FaLock,
-  FaSearch,
-  FaStar
-} from 'react-icons/fa';
-import AOS from 'aos';
-import 'aos/dist/aos.css';
+import React from "react";
+import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
+import { FiBook, FiGlobe, FiUsers, FiAward, FiArrowRight } from "react-icons/fi";
 
-const features = [
-  { icon: <FaBook />, text: 'Wide range of categorized books' },
-  { icon: <FaSearch />, text: 'Advanced search and filter tools' },
-  { icon: <FaUser />, text: 'Custom user dashboard experience' },
-  { icon: <FaShoppingCart />, text: 'Secure cart and simple checkout' },
-  { icon: <FaLock />, text: 'Admin tools for inventory & orders' },
-  { icon: <FaStar />, text: 'Top-rated recommendations just for you' }
-];
-
-const About = () => {
-  useEffect(() => {
-    AOS.init({ duration: 1000, once: true });
-  }, []);
+const AboutUs = () => {
+  const stats = [
+    { icon: <FiBook />, count: "10,000+", label: "Books Available" },
+    { icon: <FiUsers />, count: "50,000+", label: "Happy Readers" },
+    { icon: <FiGlobe />, count: "100+", label: "Cities Delivered" },
+    { icon: <FiAward />, count: "4.8/5", label: "Average Rating" },
+  ];
 
   return (
-    <div className="bg-gradient-to-b from-zinc-900 via-black to-zinc-800 text-white min-h-screen">
-      <header className="relative">
-        <img
-          src="https://imgs.search.brave.com/K6CpDI9b7Q0ACZR5foIdxE6AZVtEUfCaRCZMBj9AslM/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9jZG4u/cGl4YWJheS5jb20v/cGhvdG8vMjAyMS8w/MS8yMS8xNS81NC9i/b29rcy01OTM3NzE2/XzY0MC5qcGc"
-          alt="Books Banner"
-          className="w-full h-80 object-cover opacity-80"
-        />
-        <div className="absolute inset-0 bg-black bg-opacity-60 flex items-center justify-center">
-          <h1
-            className="text-4xl md:text-6xl font-bold text-yellow-300 tracking-tight drop-shadow-xl"
-            data-aos="zoom-in"
-          >
-            About Book Bazaar
-          </h1>
+    <div className="min-h-screen bg-surface-bg pt-navbar page-enter">
+      {/* Hero Section */}
+      <section className="relative overflow-hidden bg-surface-card py-20 lg:py-28 border-b border-surface-border">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary-600/10 rounded-full blur-3xl translate-x-1/3 -translate-y-1/3" />
+          <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-secondary-500/10 rounded-full blur-3xl -translate-x-1/3 translate-y-1/3" />
         </div>
-      </header>
 
-      <main className="max-w-6xl mx-auto px-6 py-16 space-y-20 md:px-10">
-        <section className="text-center space-y-4" data-aos="fade-up">
-          <h2 className="text-2xl md:text-3xl font-semibold text-yellow-200">
-            Your One-Stop Destination for Books
-          </h2>
-          <p className="text-zinc-300 max-w-3xl mx-auto leading-relaxed">
-            At Book Bazaar, we believe in the joy of reading and the impact of good stories.
-            From passionate bookworms to curious explorers, our platform brings everyone closer to the world of books with modern tools and a seamless experience.
-          </p>
-        </section>
+        <div className="container-max px-4 sm:px-6 relative z-10 text-center max-w-3xl mx-auto">
+          <motion.p initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} className="text-primary-400 text-sm font-semibold uppercase tracking-widest mb-4">
+            Our Story
+          </motion.p>
+          <motion.h1 initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} transition={{delay:0.1}} className="text-4xl md:text-5xl lg:text-6xl font-black text-brand-text leading-tight mb-6">
+            Empowering Minds Through <span className="gradient-text">Reading</span>
+          </motion.h1>
+          <motion.p initial={{opacity:0,y:10}} animate={{opacity:1,y:0}} transition={{delay:0.2}} className="text-brand-muted text-lg leading-relaxed">
+            At BookBazaar, we believe that the right book at the right time can change a person's life. 
+            Our mission is to make literature accessible, affordable, and enjoyable for everyone.
+          </motion.p>
+        </div>
+      </section>
 
-        <section data-aos="fade-right">
-          <h3 className="text-xl font-semibold text-yellow-300 flex items-center gap-3 mb-4">
-            <FaRocket /> Our Mission
-          </h3>
-          <p className="text-zinc-400 leading-loose">
-            We aim to revolutionize book shopping by offering an intuitive, affordable, and enjoyable digital experience — making literature accessible for all.
-          </p>
-        </section>
-
-        <section data-aos="fade-left">
-          <h3 className="text-xl font-semibold text-yellow-300 flex items-center gap-3 mb-4">
-            <FaBook /> What We Offer
-          </h3>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {features.map((item, idx) => (
-              <div
-                key={idx}
-                className="bg-zinc-900 border border-zinc-700 rounded-lg p-6 hover:shadow-lg hover:border-yellow-300 transition-all"
-                data-aos="fade-up"
-                data-aos-delay={idx * 100}
+      {/* Stats Section */}
+      <section className="py-12 bg-surface-bg border-b border-surface-border">
+        <div className="container-max px-4 sm:px-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            {stats.map((stat, i) => (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                className="text-center p-6"
               >
-                <div className="text-yellow-400 text-2xl mb-2">{item.icon}</div>
-                <p className="text-zinc-200 font-medium">{item.text}</p>
-              </div>
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-xl bg-primary-600/20 text-primary-400 text-xl mb-4">
+                  {stat.icon}
+                </div>
+                <h3 className="text-3xl font-black text-brand-text mb-1">{stat.count}</h3>
+                <p className="text-brand-muted text-sm font-medium uppercase tracking-wider">{stat.label}</p>
+              </motion.div>
             ))}
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section className="text-center space-y-3" data-aos="fade-up">
-          <p className="text-lg text-zinc-300">
-            Whether you're hunting your next favorite novel or just exploring —
-            <span className="text-yellow-300 font-semibold"> Book Bazaar is where your book journey begins.</span>
-          </p>
-          <p className="italic text-yellow-100">
-            Let’s turn every page together, one story at a time.
-          </p>
-        </section>
-      </main>
+      {/* Content Section */}
+      <section className="section-padding">
+        <div className="container-max px-4 sm:px-6">
+          <div className="grid lg:grid-cols-2 gap-16 items-center">
+            <motion.div
+              initial={{ opacity: 0, x: -30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="relative"
+            >
+              <div className="absolute -inset-4 bg-gradient-to-br from-primary-600/20 to-secondary-500/20 rounded-3xl blur-xl" />
+              <img
+                src="https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=800"
+                alt="Library"
+                className="relative rounded-2xl border border-surface-border shadow-card-hover w-full object-cover h-[500px]"
+              />
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+            >
+              <h2 className="text-3xl font-bold text-brand-text mb-6">Why Choose BookBazaar?</h2>
+              <div className="space-y-6">
+                {[
+                  { title: "Curated Selection", desc: "Every book on our platform is carefully selected to ensure quality reading material across all genres." },
+                  { title: "Seamless Experience", desc: "From browsing to checkout, our platform is designed to provide a smooth, distraction-free experience." },
+                  { title: "Community First", desc: "We are built by readers, for readers. We value your feedback and constantly improve based on your needs." }
+                ].map((item, i) => (
+                  <div key={i} className="flex gap-4">
+                    <div className="shrink-0 mt-1 w-6 h-6 rounded-full bg-primary-600/20 text-primary-400 flex items-center justify-center text-sm font-bold">
+                      {i + 1}
+                    </div>
+                    <div>
+                      <h4 className="text-brand-text font-semibold text-lg mb-1">{item.title}</h4>
+                      <p className="text-brand-muted leading-relaxed text-sm">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              
+              <div className="mt-10">
+                <Link to="/all-books" className="btn-primary inline-flex items-center gap-2">
+                  Explore Our Collection <FiArrowRight />
+                </Link>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };
 
-export default About;
+export default AboutUs;

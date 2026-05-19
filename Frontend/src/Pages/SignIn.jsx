@@ -1,123 +1,130 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
 import axios from "axios";
-import AOS from "aos";
-import "aos/dist/aos.css";
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { motion } from "framer-motion";
+import { FiMail, FiLock, FiArrowRight } from "react-icons/fi";
 import { useAuth } from "../Components/Context/AuthContext";
-import { FaUser, FaLock } from "react-icons/fa";
-import { FiEye, FiEyeOff } from "react-icons/fi";
 
-
-const Login = () => {
-  const { login } = useAuth();
-  const [formdata, setFormdata] = useState({ name: "", password: "" });
-  const [error, setError] = useState("");
+const SignIn = () => {
+  const [data, setData] = useState({ username: "", password: "" });
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const [showPassword, setShowPassword] = useState(false);
+  const { login } = useAuth();
 
-
-  useEffect(() => {
-    AOS.init({ duration: 800 });
-  }, []);
-
-  const handleChange = (e) => {
-    setFormdata({ ...formdata, [e.target.name]: e.target.value });
+  const change = (e) => {
+    const { name, value } = e.target;
+    setData({ ...data, [name]: value });
   };
 
-  const handleSubmit = async (e) => {
+  const submit = async (e) => {
     e.preventDefault();
-    setError("");
+    if (!data.username || !data.password) {
+      toast.error("Please fill all fields");
+      return;
+    }
+    setLoading(true);
     try {
-      const res = await axios.post("http://localhost:4020/website/api/user/signIn", formdata);
-
+      const res = await axios.post("http://localhost:4020/website/api/book/login", data);
+      localStorage.setItem("id", res.data.id);
       localStorage.setItem("token", res.data.token);
-      localStorage.setItem("id", res.data.user.id);
-      localStorage.setItem("role", res.data.user.role);
-
-      login(res.data.user);
+      localStorage.setItem("role", res.data.role);
+      login();
+      toast.success("Welcome back! 👋");
       navigate("/profile");
-    } catch (err) {
-      console.error(err);
-      setError(err.response?.data?.message || "Login failed.");
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Login failed");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-200 via-pink-100 to-purple-200 px-4">
-      <div
-        data-aos="zoom-in"
-        className="bg-white/30 backdrop-blur-lg shadow-2xl p-8 rounded-3xl w-full max-w-md border border-white/20"
-      >
-        <h2 className="text-4xl font-bold mb-6 text-center text-blue-700 drop-shadow">
-          Welcome Back 👋
-        </h2>
+    <div className="min-h-screen bg-surface-bg pt-navbar flex items-center justify-center p-4 page-enter relative overflow-hidden">
+      {/* Bg shapes */}
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-primary-600/10 rounded-full blur-3xl" />
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-secondary-500/10 rounded-full blur-3xl" />
 
-        {error && (
-          <p className="text-red-500 text-sm text-center mb-4">{error}</p>
-        )}
+      <div className="w-full max-w-4xl grid md:grid-cols-2 bg-surface-card rounded-3xl overflow-hidden shadow-card-hover border border-surface-border relative z-10">
+        
+        {/* Visual Side */}
+        <div className="hidden md:flex flex-col justify-between bg-gradient-to-br from-primary-900/50 to-surface-card p-12 relative overflow-hidden">
+          <div className="relative z-10">
+            <h2 className="text-3xl font-black text-white mb-4">Welcome Back to BookBazaar</h2>
+            <p className="text-brand-muted">Your personal library awaits. Sign in to access your wishlist, track orders, and discover new reads.</p>
+          </div>
+          <div className="relative z-10 mt-12">
+            <div className="p-6 glass border border-white/10 rounded-2xl">
+              <p className="text-white italic text-sm">"A room without books is like a body without a soul."</p>
+              <p className="text-primary-400 text-xs font-bold mt-3">— Marcus Tullius Cicero</p>
+            </div>
+          </div>
+          {/* Abstract book art */}
+          <div className="absolute -bottom-20 -right-20 w-80 h-80 bg-primary-600/20 rotate-45 blur-2xl rounded-[3rem]" />
+        </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Username */}
-          <div className="relative">
-            <span className="absolute top-3.5 left-4 text-blue-500">
-              <FaUser />
-            </span>
-            <input
-              type="text"
-              name="name"
-              placeholder="Username"
-              value={formdata.name}
-              onChange={handleChange}
-              className="pl-11 pr-4 py-3 w-full rounded-lg bg-white/80 text-gray-700 border border-gray-300 focus:ring-2 focus:ring-blue-300 focus:outline-none"
-              required
-            />
+        {/* Form Side */}
+        <div className="p-8 sm:p-12">
+          <div className="mb-10 text-center md:text-left">
+            <h1 className="text-2xl font-bold text-brand-text">Sign In</h1>
+            <p className="text-brand-muted text-sm mt-2">Don't have an account? <Link to="/signup" className="text-primary-400 hover:text-primary-300 font-semibold transition-colors">Sign up</Link></p>
           </div>
 
-          
-          <div className="relative">
-            <span className="absolute top-3.5 left-4 text-blue-500">
-              <FaLock />
-            </span>
-           <div className="relative w-full">
-  <input
-    type={showPassword ? "text" : "password"}
-    name="password"
-    placeholder="Password"
-    value={formdata.password}
-    onChange={handleChange}
-    className="pl-11 pr-10 py-3 w-full rounded-lg bg-white/80 text-gray-700 border border-gray-300 focus:ring-2 focus:ring-blue-300 focus:outline-none"
-    required
-  />
+          <form onSubmit={submit} className="space-y-5">
+            <div>
+              <label className="block text-xs font-semibold text-brand-muted uppercase tracking-wider mb-2">Username</label>
+              <div className="relative">
+                <FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-brand-muted" />
+                <input
+                  type="text"
+                  name="username"
+                  value={data.username}
+                  onChange={change}
+                  placeholder="Enter your username"
+                  className="input-dark pl-11"
+                  required
+                />
+              </div>
+            </div>
+            
+            <div>
+              <div className="flex justify-between items-center mb-2">
+                <label className="block text-xs font-semibold text-brand-muted uppercase tracking-wider">Password</label>
+                <a href="#" className="text-xs text-primary-400 hover:text-primary-300">Forgot password?</a>
+              </div>
+              <div className="relative">
+                <FiLock className="absolute left-4 top-1/2 -translate-y-1/2 text-brand-muted" />
+                <input
+                  type="password"
+                  name="password"
+                  value={data.password}
+                  onChange={change}
+                  placeholder="••••••••"
+                  className="input-dark pl-11"
+                  required
+                />
+              </div>
+            </div>
 
-  <button
-    type="button"
-    onClick={() => setShowPassword((prev) => !prev)}
-    className="absolute top-1/2 right-3 transform -translate-y-1/2 text-gray-500 focus:outline-none"
-  >
-    {showPassword ? <FiEyeOff className="w-5 h-5" /> : <FiEye className="w-5 h-5" />}
-  </button>
-</div>
+            <motion.button
+              whileHover={{ scale: 1.01 }}
+              whileTap={{ scale: 0.98 }}
+              type="submit"
+              disabled={loading}
+              className="w-full btn-primary flex justify-center items-center gap-2 mt-4 disabled:opacity-70"
+            >
+              {loading ? (
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              ) : (
+                <>Sign In <FiArrowRight /></>
+              )}
+            </motion.button>
+          </form>
+        </div>
 
-          </div>
-
-          <button
-            data-aos="fade-up"
-            type="submit"
-            className="mt-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold p-3 w-full rounded-lg transition-all duration-200 shadow-md"
-          >
-            Login
-          </button>
-        </form>
-
-        <p className="mt-6 text-center text-sm text-zinc-700">
-          Don’t have an account?{" "}
-          <a href="/signup" className="text-blue-600 font-medium hover:underline">
-            Sign Up
-          </a>
-        </p>
       </div>
     </div>
   );
 };
 
-export default Login;
+export default SignIn;

@@ -1,211 +1,224 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { motion } from "framer-motion";
 import { FaHeart, FaCartPlus, FaStar } from "react-icons/fa";
-import { MdEdit, MdDelete } from "react-icons/md";
+import { MdDelete } from "react-icons/md";
+import { FiArrowLeft, FiGlobe, FiBook, FiTag } from "react-icons/fi";
 import { toast } from "react-toastify";
 import { useAuth } from "../Context/AuthContext";
-import AOS from "aos";
-import "aos/dist/aos.css";
+import { useCart } from "../Context/CartContext";
 
 const BookDetails = () => {
-  const { id } = useParams();
-  const navigate = useNavigate();
-  const [book, setBook] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const { id }           = useParams();
+  const navigate         = useNavigate();
   const { isAuthenticated, user } = useAuth();
+  const { fetchCartCount }        = useCart();
 
-  const [userRating, setUserRating] = useState(0);
+  const [book,        setBook]        = useState(null);
+  const [loading,     setLoading]     = useState(true);
+  const [error,       setError]       = useState("");
+  const [userRating,  setUserRating]  = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
 
   const headers = {
-    id: localStorage.getItem("id"),
+    id:            localStorage.getItem("id"),
     authorization: `Bearer ${localStorage.getItem("token")}`,
-    bookid: id,
+    bookid:        id,
   };
 
   const HandleFavourite = async () => {
+    if (!isAuthenticated) { toast.info("Please sign in first"); return; }
     try {
-      await axios.put(
-        "http://localhost:4020/website/api/book/addFavourite",
-        {},
-        { headers }
-      );
-      toast.success("Book added to favourites!");
-    } catch (error) {
-      console.error("Failed to add to favourites:", error);
-    }
+      await axios.put("http://localhost:4020/website/api/book/addFavourite", {}, { headers });
+      toast.success("Added to wishlist! ❤️");
+    } catch { toast.error("Failed to add to wishlist"); }
   };
 
   const HandleCart = async () => {
+    if (!isAuthenticated) { toast.info("Please sign in first"); return; }
     try {
-      await axios.put(
-        "http://localhost:4020/website/api/book/addCart",
-        {},
-        { headers }
-      );
-      toast.success("Book added to cart!");
-    } catch (error) {
-      console.error("Failed to add to cart:", error);
-    }
+      await axios.put("http://localhost:4020/website/api/book/addCart", {}, { headers });
+      toast.success("Added to cart! 🛒");
+      fetchCartCount();
+    } catch { toast.error("Failed to add to cart"); }
   };
 
   const DeleteBook = async () => {
-    await axios.delete("http://localhost:4020/website/api/book/deletBook", {
-      headers,
-    });
-    toast.success("Book deleted successfully");
-    navigate("/all-books");
+    try {
+      await axios.delete("http://localhost:4020/website/api/book/deletBook", { headers });
+      toast.success("Book deleted successfully");
+      navigate("/all-books");
+    } catch { toast.error("Failed to delete book"); }
   };
 
   useEffect(() => {
-    AOS.init({ duration: 800, once: true });
-
-    axios
-      .get(`http://localhost:4020/website/api/book/bookbyId/${id}`)
+    axios.get(`http://localhost:4020/website/api/book/bookbyId/${id}`)
       .then((res) => {
         setBook(res.data.data);
         setLoading(false);
-
-        // Load previous rating from localStorage
-        const savedRating = localStorage.getItem(`rating-${id}`);
-        if (savedRating) {
-          setUserRating(Number(savedRating));
-        }
+        const saved = localStorage.getItem(`rating-${id}`);
+        if (saved) setUserRating(Number(saved));
       })
-      .catch((err) => {
-        console.error(err);
-        setError("Failed to load book details");
-        setLoading(false);
-      });
+      .catch(() => { setError("Failed to load book details"); setLoading(false); });
   }, [id]);
 
-  if (loading)
-    return <div className="text-center text-white mt-10">Loading...</div>;
-  if (error)
-    return <div className="text-center text-red-500 mt-10">{error}</div>;
+  if (loading) return (
+    <div className="min-h-screen bg-surface-bg pt-navbar flex items-center justify-center">
+      <div className="flex flex-col items-center gap-4">
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          className="w-12 h-12 border-3 border-primary-600/30 border-t-primary-600 rounded-full"
+        />
+        <p className="text-brand-muted">Loading book…</p>
+      </div>
+    </div>
+  );
+
+  if (error) return (
+    <div className="min-h-screen bg-surface-bg pt-navbar flex items-center justify-center">
+      <p className="text-red-400">{error}</p>
+    </div>
+  );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#1f1f1f] via-[#2a2a2a] to-[#1f1f1f] text-white flex justify-center items-center px-6 py-12">
-      <div
-        className="max-w-6xl w-full flex flex-col md:flex-row gap-12 bg-[#2a2a2a] rounded-xl shadow-2xl p-8 border border-zinc-700"
-        data-aos="zoom-in"
-      >
-        {/* Left - Book Image & Actions */}
-        <div className="md:w-1/2 flex justify-center items-center flex-col" data-aos="fade-right">
-          <img
-            src={book?.url || "https://via.placeholder.com/300x400"}
-            alt={book?.title || "Book Cover"}
-            className="w-[300px] h-[400px] object-cover rounded-xl shadow-xl border-2 border-indigo-500 transition-transform duration-300 hover:scale-105"
-          />
+    <div className="min-h-screen bg-surface-bg pt-navbar page-enter">
+      <div className="container-max px-4 sm:px-6 py-10">
+        {/* Back button */}
+        <button
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-2 text-brand-muted hover:text-primary-400 transition-colors mb-8 text-sm font-medium"
+        >
+          <FiArrowLeft /> Back
+        </button>
 
-          {isAuthenticated && user?.role === "user" && (
-            <div className="flex gap-4 mt-6">
-              <button
-                onClick={HandleFavourite}
-                className="bg-red-600 hover:bg-red-700 p-3 rounded-full shadow-md transition"
-                data-aos="fade-up"
-                data-aos-delay="100"
-              >
-                <FaHeart className="text-white text-xl" />
-              </button>
-              <button
-                onClick={HandleCart}
-                className="bg-green-600 hover:bg-green-700 p-3 rounded-full shadow-md transition"
-                data-aos="fade-up"
-                data-aos-delay="150"
-              >
-                <FaCartPlus className="text-white text-xl" />
-              </button>
+        <div className="grid md:grid-cols-2 gap-12 items-start">
+          {/* Left: Cover */}
+          <motion.div
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="flex flex-col items-center gap-6"
+          >
+            <div className="relative group">
+              <img
+                src={book?.url || "https://placehold.co/300x400/111827/7C3AED?text=Book"}
+                alt={book?.title}
+                className="w-72 h-96 object-cover rounded-2xl shadow-card-hover border border-surface-border group-hover:scale-[1.02] transition-transform duration-300"
+              />
+              <div className="absolute inset-0 rounded-2xl ring-1 ring-primary-600/20" />
             </div>
-          )}
 
-          {isAuthenticated && user?.role === "admin" && (
-            <div className="flex gap-4 mt-6">
-              
-              <button
-                className="bg-red-600 hover:bg-red-700 p-3 rounded-full shadow-md transition"
-                data-aos="fade-up"
-                data-aos-delay="150"
+            {/* Action buttons */}
+            {isAuthenticated && user?.role === "user" && (
+              <div className="flex gap-4">
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={HandleFavourite}
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20 transition-all font-medium text-sm"
+                >
+                  <FaHeart /> Wishlist
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={HandleCart}
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary-600 hover:bg-primary-500 text-white shadow-glow transition-all font-medium text-sm"
+                >
+                  <FaCartPlus /> Add to Cart
+                </motion.button>
+              </div>
+            )}
+
+            {isAuthenticated && user?.role === "admin" && (
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={DeleteBook}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white transition-all font-medium text-sm"
               >
-                <MdDelete className="text-white text-xl" />
-              </button>
+                <MdDelete /> Delete Book
+              </motion.button>
+            )}
+          </motion.div>
+
+          {/* Right: Info */}
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.1 }}
+            className="flex flex-col gap-5"
+          >
+            <div>
+              <h1 className="text-3xl md:text-4xl font-extrabold text-brand-text leading-tight">
+                {book?.title}
+              </h1>
+              <p className="text-brand-muted mt-2">
+                by <span className="text-primary-400 font-semibold">{book?.author}</span>
+              </p>
             </div>
-          )}
-        </div>
 
-    
-        <div className="md:w-1/2 flex flex-col justify-center" data-aos="fade-left">
-          <h1 className="text-4xl font-extrabold mb-3 text-center md:text-left text-indigo-300 drop-shadow">
-            {book?.title || "Title not available"}
-          </h1>
+            {/* Price */}
+            <div className="flex items-center gap-4">
+              <span className="text-4xl font-black text-accent-500">₹{book?.price}</span>
+              <span className="text-brand-muted line-through text-lg">₹{Math.round(book?.price * 1.3)}</span>
+              <span className="bg-green-500/20 text-green-400 border border-green-500/30 text-xs font-bold px-2 py-0.5 rounded-full">
+                23% OFF
+              </span>
+            </div>
 
-          <p className="text-gray-300 mb-4 text-center md:text-left">
-            by{" "}
-            <span className="text-pink-400 font-medium">
-              {book?.author || "Unknown Author"}
-            </span>
-          </p>
-
-          <p className="text-gray-400 mb-4 text-center md:text-left leading-relaxed">
-            {book?.description || "No description provided."}
-          </p>
-
-          <div className="flex items-center gap-2 mt-4 justify-center md:justify-start">
-            <span className="text-sm text-gray-400">🌐 Language:</span>
-            <span className="text-sm text-gray-200">English</span>
-          </div>
-
-          <h2 className="text-2xl font-bold text-yellow-400 mt-6 text-center md:text-left">
-            ₹ {book?.price || 0}
-          </h2>
-
-          
-          <div className="mt-6">
-            <h3 className="text-md text-gray-300 mb-2">Rate this book:</h3>
-            <div className="flex gap-2">
-              {[1, 2, 3, 4, 5].map((star) => (
-                <FaStar
-                  key={star}
-                  size={24}
-                  className={`cursor-pointer transition transform hover:scale-110 ${
-                    (hoverRating || userRating) >= star
-                      ? "text-yellow-400"
-                      : "text-gray-500"
-                  }`}
-                  onClick={() => {
-                    setUserRating(star);
-                    localStorage.setItem(`rating-${id}`, star);
-                  }}
-                  onMouseEnter={() => setHoverRating(star)}
-                  onMouseLeave={() => setHoverRating(0)}
-                />
+            {/* Meta */}
+            <div className="flex flex-wrap gap-3">
+              {[
+                { icon: <FiGlobe />, label: book?.language || "English" },
+                { icon: <FiTag />,   label: "Fiction" },
+                { icon: <FiBook />,  label: "Paperback" },
+              ].map((m) => (
+                <span key={m.label}
+                  className="flex items-center gap-1.5 text-xs text-brand-muted bg-surface-card border border-surface-border px-3 py-1.5 rounded-lg">
+                  <span className="text-primary-400">{m.icon}</span>
+                  {m.label}
+                </span>
               ))}
             </div>
-            {userRating > 0 && (
-              <p className="text-sm text-green-400 mt-2">
-                You rated this book {userRating} ⭐
-              </p>
-            )}
-          </div>
 
-          <button
-            onClick={() => navigate(-1)}
-            className="inline-flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg transition duration-200 shadow-md hover:shadow-lg mt-6 self-start"
-          >
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-            >
-              <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-            </svg>
-            Back
-          </button>
+            {/* Description */}
+            <div className="card-dark p-5">
+              <h3 className="text-brand-text font-semibold mb-3 text-sm uppercase tracking-wider">About This Book</h3>
+              <p className="text-brand-muted text-sm leading-relaxed">
+                {book?.description || "No description available for this book."}
+              </p>
+            </div>
+
+            {/* Star rating */}
+            <div className="card-dark p-5">
+              <h3 className="text-brand-text font-semibold mb-4 text-sm uppercase tracking-wider">Your Rating</h3>
+              <div className="flex gap-2">
+                {[1,2,3,4,5].map((star) => (
+                  <motion.button
+                    key={star}
+                    whileHover={{ scale: 1.2 }}
+                    whileTap={{ scale: 0.9 }}
+                    onClick={() => { setUserRating(star); localStorage.setItem(`rating-${id}`, star); }}
+                    onMouseEnter={() => setHoverRating(star)}
+                    onMouseLeave={() => setHoverRating(0)}
+                  >
+                    <FaStar
+                      className={`text-2xl transition-colors ${
+                        (hoverRating || userRating) >= star ? "text-accent-500" : "text-surface-border"
+                      }`}
+                    />
+                  </motion.button>
+                ))}
+              </div>
+              {userRating > 0 && (
+                <p className="text-green-400 text-sm mt-3">
+                  You rated this book {userRating} star{userRating > 1 ? "s" : ""}! ⭐
+                </p>
+              )}
+            </div>
+          </motion.div>
         </div>
       </div>
     </div>

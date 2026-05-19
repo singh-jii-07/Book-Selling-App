@@ -1,76 +1,88 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { Link } from 'react-router-dom';
-import AOS from 'aos';
-import 'aos/dist/aos.css';
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import axios from "axios";
+import { motion } from "framer-motion";
+import { FaStar } from "react-icons/fa";
 
-const BooksList = () => {
-  const [books, setBooks] = useState([]);
+const AddBook = () => {
+  const [books,   setBooks]   = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
 
   const baseURL = import.meta.env.VITE_BACKEND_URL;
 
   useEffect(() => {
-    AOS.init({ duration: 1000, once: true });
-
     axios.get(baseURL)
-      .then(response => {
-        setBooks(response.data.data);
-        setLoading(false);
-      })
-      .catch(error => {
-        console.error('Error fetching books:', error);
-        setError('Failed to load books.');
-        setLoading(false);
-      });
+      .then((r) => { setBooks(r.data.data || []); setLoading(false); })
+      .catch(() => setLoading(false));
   }, []);
 
-  if (loading) return <p className="p-4 text-center text-lg">Loading books…</p>;
-  if (error) return <p className="p-4 text-red-500 text-center text-lg">{error}</p>;
+  if (loading || !books.length) return null;
 
   return (
-    <div className="px-4 py-12 max-w-7xl mx-auto">
-      <h2
-        className="text-4xl font-extrabold text-center bg-gradient-to-r from-yellow-400 via-pink-500 to-purple-500 bg-clip-text text-transparent mb-10"
-        data-aos="fade-down"
-      >
-        📚 Recently Added Books
-      </h2>
+    <section className="section-padding bg-surface-card">
+      <div className="container-max">
+        <div className="text-center mb-12">
+          <motion.p initial={{opacity:0,y:10}} whileInView={{opacity:1,y:0}} viewport={{once:true}}
+            className="text-primary-400 text-sm font-semibold uppercase tracking-widest mb-2">
+            Fresh Arrivals
+          </motion.p>
+          <motion.h2 initial={{opacity:0,y:10}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{delay:0.1}}
+            className="section-title">
+            Recently <span className="gradient-text">Added Books</span>
+          </motion.h2>
+        </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
-        {books.map((book, index) => (
-          <Link to={`/view-details/${book._id}`} key={book._id}>
-            <div
-              className="bg-white rounded-2xl shadow-lg border border-zinc-200 hover:shadow-2xl transform hover:-translate-y-1 transition duration-300 ease-in-out"
-              data-aos="zoom-in"
-              data-aos-delay={index * 100}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {books.map((book, i) => (
+            <motion.div
+              key={book._id}
+              initial={{ opacity: 0, y: 25 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.08 }}
+              whileHover={{ y: -8 }}
             >
-              <div className="p-4 flex flex-col items-center">
-                <div className="border-4 border-yellow-300 rounded-xl overflow-hidden w-full">
-                  <img
-                    src={book.url || 'https://imgs.search.brave.com/KNx0ZoMmuEjxh77ewTIY3mKvbCs-SPFRFuclV8-A4WI/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5pc3RvY2twaG90/by5jb20vaWQvMTM1/NDQ0MTk5Ni9waG90/by9pbWFnZS1vZi1v/cGVuLWFudGlxdWUt/Ym9vay1vbi13b29k/ZW4tdGFibGUtd2l0/aC1nbGl0dGVyLW92/ZXJsYXkuanBnP3M9/NjEyeDYxMiZ3PTAm/az0yMCZjPWdBXzdS/QjdPbERtRGl3RW1T/emhwckZCRHZvd0sy/aERfLWVqZi1zdGtP/cEE9'}
-                    alt={book.title}
-                    className="w-full h-52 object-cover hover:scale-105 transition-transform duration-300"
-                  />
+              <Link to={`/view-details/${book._id}`} className="block">
+                <div className="card-dark overflow-hidden group h-full flex flex-col">
+                  <div className="relative overflow-hidden h-60">
+                    <img
+                      src={book.url || "https://placehold.co/300x400/111827/7C3AED?text=Book"}
+                      alt={book.title}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-surface-card/80 to-transparent" />
+                    <span className="absolute top-3 left-3 bg-green-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full">
+                      NEW
+                    </span>
+                    {/* Hover overlay */}
+                    <div className="absolute inset-0 bg-primary-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                      <span className="bg-primary-600 text-white px-4 py-2 rounded-xl text-sm font-semibold">
+                        View Details
+                      </span>
+                    </div>
+                  </div>
+                  <div className="p-4 flex flex-col flex-1">
+                    <h3 className="text-brand-text font-semibold text-sm leading-snug line-clamp-2 group-hover:text-primary-400 transition-colors">
+                      {book.title}
+                    </h3>
+                    <p className="text-brand-muted text-xs mt-1">{book.author}</p>
+                    <div className="flex gap-0.5 mt-2">
+                      {[1,2,3,4,5].map(s => (
+                        <FaStar key={s} className={`text-xs ${s<=4?"text-accent-500":"text-surface-border"}`} />
+                      ))}
+                    </div>
+                    <div className="flex items-center justify-between mt-auto pt-3">
+                      <span className="text-accent-500 font-bold text-base">₹{book.price}</span>
+                    </div>
+                  </div>
                 </div>
-
-                <div className="mt-4 text-center w-full">
-                  <h3 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-indigo-600 via-purple-500 to-pink-500 bg-clip-text text-transparent hover:underline transition duration-200">
-                    {book.title}
-                  </h3>
-                  <p className="text-sm italic text-zinc-500 mt-1">{book.author}</p>
-                  <p className="mt-2 text-lg font-semibold text-yellow-500 drop-shadow">
-                    ₹{book.price}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </Link>
-        ))}
+              </Link>
+            </motion.div>
+          ))}
+        </div>
       </div>
-    </div>
+    </section>
   );
 };
 
-export default BooksList;
+export default AddBook;

@@ -1,69 +1,88 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import Sidebar from '../Components/Profile/Sidebar';
-import Favourites from '../Components/Profile/Favourites'
-// import Order from '../Components/Profile/Order';
-import Adminorder from '../Components/order/Adminorder';
-import { useAuth } from '../Components/Context/AuthContext';
+import React, { useEffect, useState } from "react";
+import { Outlet } from "react-router-dom";
+import axios from "axios";
+import { toast } from "react-toastify";
+import Sidebar from "../Components/Profile/Sidebar";
+import { useAuth } from "../Components/Context/AuthContext";
 
 const Profile = () => {
-  const headers = {
-    id: localStorage.getItem("id"),
-    authorization: `Bearer ${localStorage.getItem("token")}`
-  };
-const {  user } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
   const [profile, setProfile] = useState(null);
-  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetch = async () => {
+    if (!isAuthenticated) return;
+    const fetchProfile = async () => {
       try {
-        const res = await axios.get("http://localhost:4020/website/api/user/user-info", { headers });
-        console.log(res.data.data);
-        setProfile(res.data.data);
+        const res = await axios.get("http://localhost:4020/website/api/book/getuserInfo", {
+          headers: {
+            id: localStorage.getItem("id"),
+            authorization: `Bearer ${localStorage.getItem("token")}`,
+          }
+        });
+        setProfile(res.data);
+        setLoading(false);
       } catch (err) {
-        console.error("Error fetching profile:", err);
-        setError("Failed to load profile");
+        if (err.response && err.response.status === 401) {
+          toast.error("Session expired, please log in again.");
+          localStorage.clear();
+          logout();
+        } else {
+          toast.error("Failed to load profile");
+        }
+        setLoading(false);
       }
     };
-    fetch();
-  }, []);
+    fetchProfile();
+  }, [isAuthenticated, logout]);
+
+  if (!isAuthenticated) return (
+    <div className="min-h-screen bg-surface-bg pt-navbar flex items-center justify-center text-brand-muted">
+      Please sign in to view your profile.
+    </div>
+  );
+
+  if (loading) return (
+    <div className="min-h-screen bg-surface-bg pt-navbar flex items-center justify-center">
+      <div className="w-8 h-8 border-3 border-primary-600/30 border-t-primary-600 rounded-full animate-spin" />
+    </div>
+  );
 
   return (
-    <div className='bg-zinc-900 px-3 md:px-12 flex flex-col md:flex-row  py-8 text-white'>
-      {!profile && !error && (
-        <p className='w-full h-full flex items-center justify-center'>
-          Loading...
-        </p>
-      )}
-      {error && (
-        <p className='text-red-500 w-full h-full flex items-center justify-center'>
-          {error}
-        </p>
-      )}
-      {profile && (
-        <>
-          <div className='w-full md:w-1/6  mt-8'>
-            <Sidebar data={profile} />
+    <div className="min-h-screen bg-surface-bg pt-navbar">
+      {/* Header */}
+      <div className="bg-surface-card border-b border-surface-border">
+        <div className="container-max px-4 sm:px-6 py-8 flex items-center gap-5">
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-600 to-secondary-500 flex items-center justify-center text-white text-2xl font-bold shadow-glow-sm">
+            {profile?.name?.[0]?.toUpperCase() || "U"}
           </div>
-          <div className='w-full md:w-5/6 mt-8'>
-          {
-            user?.role==="user"&&(
+          <div>
+            <h1 className="text-2xl font-bold text-brand-text">{profile?.name}</h1>
+            <p className="text-brand-muted text-sm">{profile?.email}</p>
+          </div>
+          {profile?.role === "admin" && (
+            <span className="ml-auto bg-primary-600 text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+              Admin
+            </span>
+          )}
+        </div>
+      </div>
 
-              <Favourites/>
-            )
-          }
-          {
-            user?.role==="admin"&&(
-              <div className='text-center text-2xl font-bold'>
-              {/* <Order/> */}
-              <Adminorder/>
-              </div>
-            )
-          }
-          </div>
-        </>
-      )}
+      <div className="container-max px-4 sm:px-6 py-8 flex flex-col md:flex-row gap-8">
+        <aside className="w-full md:w-64 shrink-0">
+          <Sidebar profile={profile} />
+        </aside>
+        <main className="flex-1 min-w-0">
+          <Outlet />
+          {/* Default view if no sub-route */}
+          {window.location.pathname === "/profile" && (
+            <div className="card-dark p-8 text-center">
+              <h3 className="text-brand-text font-bold text-xl mb-2">Welcome back, {profile?.name}!</h3>
+              <p className="text-brand-muted">Select an option from the sidebar to manage your account.</p>
+            </div>
+          )}
+        </main>
+      </div>
     </div>
   );
 };
