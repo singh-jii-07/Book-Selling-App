@@ -11,5 +11,5 @@ const bookSchema = new mongoose.Schema({
     timestamps: true
 });
 
-const Book = mongoose.model('Book', bookSchema); // ✅ use 'Book' with capital B
+const Book = mongoose.model('Book', bookSchema); 
 export default Book;
